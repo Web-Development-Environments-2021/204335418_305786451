@@ -7,10 +7,37 @@ var start_time;
 var time_elapsed;
 var interval;
 
+var activePageId='#page1';
+var users=[];
+users["oded"]={"firstName":"oded", "lasName":"Berkovich"};
+users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+
 $(document).ready(function() {
 	context = canvas.getContext("2d");
+	// initPages();
+	$(".pageButton").click(function(){
+		var id = $(this).attr('class').split(/\s+/)[1];
+		alert(id);
+		showScreen(id);
+	});
+	// alert(users["eilam"].firstName);
 	Start();
 });
+
+// function initPages() {
+// 	for (var i = 2; i <= 6; i++) {
+// 		var id = "#page" + i;
+// 		$(id).hide();
+// 	}
+// }
+
+function showScreen(pageId){
+	var id ="#page"+pageId;
+	// alert(id);
+	$(activePageId).hide()
+	$(id).show();
+	activePageId=id;
+}
 
 function Start() {
 	board = new Array();
