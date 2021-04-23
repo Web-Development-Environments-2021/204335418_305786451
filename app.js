@@ -6,10 +6,11 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-
+var login = false;
 var activePageId='#page1';
 var users=[];
-users["oded"]={"firstName":"oded", "lasName":"Berkovich"};
+var activeUser="";
+users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
 $(document).ready(function() {
@@ -20,6 +21,18 @@ $(document).ready(function() {
 		alert(id);
 		showScreen(id);
 	});
+	$("#Login").submit(function(e){
+		e.preventDefault();
+		var screen;
+		if(validateLogin(e.target)){
+			screen=2;
+		}
+		else{
+			screen=4;
+		}
+		e.target.reset();
+		showScreen(screen);
+	})
 	// alert(users["eilam"].firstName);
 	Start();
 });
@@ -37,6 +50,22 @@ function showScreen(pageId){
 	$(activePageId).hide()
 	$(id).show();
 	activePageId=id;
+}
+
+function validateLogin(form){
+	var username = form["userName"].value;
+	var password = form["password"].value;
+	var loginSuccess = false;
+	if(username in users)
+		loginSuccess= users[username].password==password;
+	if(loginSuccess){
+		login=true;
+		activeUser=username;
+	}
+	else{
+		alert("You entered an incorrect username or password.\n Please try again.");
+	}
+	return loginSuccess;
 }
 
 function Start() {
