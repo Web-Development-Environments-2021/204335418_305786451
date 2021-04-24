@@ -6,12 +6,14 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-var login = false;
+var intervalSet = false;
+var loggedIn = false;
 var activePageId='#page1';
 var users=[];
+var intervalLength=100;
 var activeUser="";
-users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
-users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
+users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
 
 $(document).ready(function() {
 	initListeners();
@@ -105,6 +107,14 @@ function initSignUpForm(){
 
 function addNewUser(){
 	var form =  document.getElementById("signUp");
+	var newUser = {
+		fname: form.fname.value,
+		lname: form.lname.value,
+		password: form.password.value,
+		email: form.email.value,
+		bday : form.bday.value
+	};
+	users[form.username.value]=newUser;
 	form.reset();
 }
 
@@ -158,12 +168,18 @@ function initSettings(){
 // 	}
 // }
 function chooseKey(e){
-	e.target.value=event.key;
+	e.target.value=e.key;
 }
 function showScreen(pageId){
 	if(pageId==2)
 	{
-		Start();
+		if (loggedIn)
+			Start();
+		else {
+			alert("You must be logged in to play the game!");
+			showScreen(4);
+			return;
+		}
 	}
 	var id ="#page"+pageId;
 	$(activePageId).hide();
@@ -178,7 +194,7 @@ function validateLogin(form){
 	if(username in users)
 		loginSuccess= users[username].password==password;
 	if(loginSuccess){
-		login=true;
+		loggedIn=true;
 		activeUser=username;
 	}
 	else{
@@ -245,7 +261,10 @@ function Start() {
 		},
 		false
 	);
-	interval = setInterval(UpdatePosition, 100);
+	if(!intervalSet){
+		interval = setInterval(UpdatePosition, intervalLength);
+		intervalSet=true;
+	}
 }
 
 function findRandomEmptyCell(board) {

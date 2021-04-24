@@ -1,11 +1,12 @@
-/* #body
+body
 {
-    margin-left: 0px;
-    margin-right: 0px;
-} */
+    height: 100%;
+    margin: 0;
+}
 .content
 {
     margin-top: 60px;
+    min-height: 100%;
 }
 #navbar
 {
@@ -23,9 +24,9 @@
 
 }
 
-#footer
+.footer
 {
-    position: fixed bottom;
+    height: 50px;
 }
 
 .modal {
