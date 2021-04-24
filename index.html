@@ -39,7 +39,21 @@
 				
 			</div>
 			<div id="page4" hidden>
-				<form id="Login" onsubmit="login()">
+				<form id="Login">
+					<input type = "text" id="userName" name="userName" class="inputBox" placeholder = "User Name" required />
+					<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required />
+					<button type="submit" id="loginSubmit" class="loginButton">Login</button>
+					<button type="reset" id="loginReset" class="loginButton">Reset</button>  
+				</form>
+			</div>
+			<div id="page5" hidden>
+				<form id="settings">
+					<div id="playingKeys">
+						Up key<input type = "button" id="upKey" name="upKey" class="playingKeySettings" value = "ArrowUp"  />
+						Down key<input type = "button" id="downKey" name="downKey" class="playingKeySettings" value = "ArrowDown"  />
+						Left key<input type = "button" id="leftKey" name="leftKey" class="playingKeySettings" value = "ArrowLeft"  />
+						Right key<input type = "button" id="rightKey" name="rightKey" class="playingKeySettings" value = "ArrowRight"  />
+					</div>
 					<input type = "text" id="userName" name="userName" class="inputBox" placeholder = "User Name" required />
 					<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required />
 					<button type="submit" id="loginSubmit" class="loginButton">Login</button>

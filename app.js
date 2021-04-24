@@ -33,7 +33,30 @@ $(document).ready(function() {
 		e.target.reset();
 		showScreen(screen);
 	})
-	// alert(users["eilam"].firstName);
+	$("#upKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	})
+	$("#upKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	})
+	$("#downKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	})
+	$("#downKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	})
+	$("#leftKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	})
+	$("#leftKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	})
+	$("#rightKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	})
+	$("#rightKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	})
 	Start();
 });
 
@@ -43,7 +66,9 @@ $(document).ready(function() {
 // 		$(id).hide();
 // 	}
 // }
-
+function chooseKey(e){
+	e.target.value=event.key;
+}
 function showScreen(pageId){
 	var id ="#page"+pageId;
 	// alert(id);
