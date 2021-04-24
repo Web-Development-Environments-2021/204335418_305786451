@@ -6,9 +6,11 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-var login = false;
+var intervalSet = false;
+var loggedIn = false;
 var activePageId='#page1';
 var users=[];
+var intervalLength=100;
 var activeUser="";
 var playingKeys = [];
 playingKeysSetup(playingKeys);
@@ -18,43 +20,86 @@ var chosenKey=0;
 
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
+users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
 
 $(document).ready(function() {
+	alert("sad");
 	initListeners();
 });
 
 function initListeners(){
+	initButtons();
+	initSignUpForm();
+	initLoginForm();
+	initSettings();
+}
+
+function initButtons(){
 	$(".pageButton").click(function(e){
 		var id = e.target.getAttribute("page");
 		showScreen(id);
 	});
-	initSignUpForm();
-	initLoginForm();
-	initSettings();
+	initAboutModal();
+}
+
+function initAboutModal() {
+	var about = document.getElementById("about");
+	$(".aboutButton").click(function () {
+		about.style.display = "block";
+	});
+	var span = document.getElementsByClassName("close")[0];
+	span.onclick = function () {
+		about.style.display = "none";
+	};
+	window.onclick = function (e) {
+		if (e.target == document.getElementById("about")) {
+			about.style.display = "none";
+		}
+	};
+	window.onkeyup = function(e) {
+		if(e.keyCode==27) 
+			about.style.display = "none" ;
+	}
+	
 }
 
 function initSignUpForm(){
 	$("#signUp").validate(
 		{
 			rules: {
+				username: {
+					required: true,
+					checkUsername: true
+				},
 				fname: {
 					required:true,
 					pattern: "^[a-zA-Z]*$"
 				},
 				lname:{
 					required:true,
-					minlength:4,
 					pattern: "^[a-zA-Z]*$"
 				},
 				password: {
 					required:true,
 					checkPassword: true,
 					minlength:6
-				}
+				},
+				email:"required",
+				bday :"required"
 			},
 			messages : {
+				fname:{
+					pattern:"No digits allowed"
+				},
+				lname:{
+					pattern:"No digits allowed"
+				},
 				password:{
 					checkPassword:"Please enter at least one character and one digit"
+				},
+				username:{
+					checkUsername:"Username already exists, please choose another one"
 				}
 			}
 			
@@ -63,7 +108,25 @@ function initSignUpForm(){
 	$.validator.addMethod("checkPassword", function (value) {
 	return /[a-zA-Z]/.test(value) && /\d/.test(value); // constains a letter and a digit
 	});
+	$.validator.addMethod("checkUsername", function (value) {
+		return !(value in users); // username already exists
+	});
+	
 }
+
+function addNewUser(){
+	var form =  document.getElementById("signUp");
+	var newUser = {
+		fname: form.fname.value,
+		lname: form.lname.value,
+		password: form.password.value,
+		email: form.email.value,
+		bday : form.bday.value
+	};
+	users[form.username.value]=newUser;
+	form.reset();
+}
+
 function initLoginForm(){
 	$("#Login").submit(function(e){
 		e.preventDefault();
@@ -100,28 +163,28 @@ function initSettings(){
 		showScreen(5);
 	});
 	$("#upKey").blur(function(e){
-		insertChoosenKey(e.target,"up");
+		insertChosenKey(e.target,"up");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#upKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#downKey").blur(function(e){
-		insertChoosenKey(e.target,"down");
+		insertChosenKey(e.target,"down");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#downKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#leftKey").blur(function(e){
-		insertChoosenKey(e.target,"left");
+		insertChosenKey(e.target,"left");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#leftKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#rightKey").blur(function(e){
-		insertChoosenKey(e.target,"right");
+		insertChosenKey(e.target,"right");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#rightKey").focus(function(e){
@@ -155,7 +218,7 @@ function validateChoosenKeys(){
 	}
 	return true;
 }
-function insertChoosenKey(targetButton, keyType){
+function insertChosenKey(targetButton, keyType){
 	if(keyType=="left"){
 		chosenPlayingKeys["left"].keyCode=chosenKey;
 		chosenPlayingKeys["left"].keyName=targetButton.value;
@@ -236,11 +299,18 @@ function playingKeysSetup(keysArray){
 	keysArray["right"]={"keyCode":39, "keyName":"ArrowRight"};
 	keysArray["up"]={"keyCode":38, "keyName":"ArrowUp"};
 	keysArray["down"]={"keyCode":40, "keyName":"ArrowDown"};
+	// e.target.value=e.key;
 }
 function showScreen(pageId){
 	if(pageId==2)
 	{
-		Start();
+		if (loggedIn)
+			Start();
+		else {
+			alert("You must be logged in to play the game!");
+			showScreen(4);
+			return;
+		}
 	}
 	var id ="#page"+pageId;
 	$(activePageId).hide();
@@ -255,7 +325,7 @@ function validateLogin(form){
 	if(username in users)
 		loginSuccess= users[username].password==password;
 	if(loginSuccess){
-		login=true;
+		loggedIn=true;
 		activeUser=username;
 	}
 	else{
@@ -322,7 +392,10 @@ function Start() {
 		},
 		false
 	);
-	interval = setInterval(UpdatePosition, 100);
+	if(!intervalSet){
+		interval = setInterval(UpdatePosition, intervalLength);
+		intervalSet=true;
+	}
 }
 
 function findRandomEmptyCell(board) {
