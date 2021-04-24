@@ -1,5 +1,6 @@
+var ghostImage;
 var context;
-var shape = new Object();
+var pacman = new Object();
 var board;
 var score;
 var pac_color;
@@ -7,27 +8,33 @@ var start_time;
 var time_elapsed;
 var interval;
 var intervalSet = false;
-var loggedIn = false;
+var loggedIn = true;
 var activePageId='#page1';
 var users=[];
 var intervalLength=100;
 var activeUser="";
+var maxPoints=50;
 var playingKeys = [];
 playingKeysSetup(playingKeys);
 var chosenPlayingKeys=[];
 playingKeysSetup(chosenPlayingKeys);
 var chosenKey=0;
+var ghosts=[];
 
-users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
-users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+var direction="left";
+
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
 
 $(document).ready(function() {
-	alert("sad");
 	initListeners();
+	initImages();
 });
 
+function initImages(){
+	ghostImage = new Image();
+	ghostImage.src= "images/ghost.png";
+}
 function initListeners(){
 	initButtons();
 	initSignUpForm();
@@ -101,8 +108,7 @@ function initSignUpForm(){
 				username:{
 					checkUsername:"Username already exists, please choose another one"
 				}
-			}
-			
+			}	
 		}
 	);
 	$.validator.addMethod("checkPassword", function (value) {
@@ -140,7 +146,6 @@ function initLoginForm(){
 
 function initSettings(){
 	
-
 	$("#setPlayingKeys").submit(function(e){
 		e.preventDefault();
 		
@@ -214,7 +219,7 @@ function insertChosenKey(targetButton, keyType){
 	}
 	else if(keyType=="right"){
 		chosenPlayingKeys["right"].keyCode=chosenKey;
-		chosenPlayingKeys["right"].keyName=targetButton.vale;
+		chosenPlayingKeys["right"].keyName=targetButton.value;
 	}	
 	else if(keyType=="up"){
 		chosenPlayingKeys["up"].keyCode=chosenKey;
@@ -334,6 +339,7 @@ function Start() {
 	start_time = new Date();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
+		board[0][0]=3;
 		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
 			if (
@@ -346,12 +352,14 @@ function Start() {
 				board[i][j] = 4;
 			} else {
 				var randomNum = Math.random();
+				// console.log("random",randomNum);
 				if (randomNum <= (1.0 * food_remain) / cnt) {
+					console.log("value",food_remain);
 					food_remain--;
 					board[i][j] = 1;
 				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
-					shape.i = i;
-					shape.j = j;
+					pacman.i = i;
+					pacman.j = j;
 					pacman_remain--;
 					board[i][j] = 2;
 				} else {
@@ -381,9 +389,8 @@ function Start() {
 		},
 		false
 	);
-	if(!intervalSet){
+	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
-		intervalSet=true;
 	}
 }
 
@@ -435,19 +442,24 @@ function Draw() {
 			center.y = j * 60 + 30;
 			if (board[i][j] == 2) {
 				context.beginPath();
-				context.arc(center.x, center.y, 30, 0.15 * Math.PI, 1.85 * Math.PI); // half circle
+				var eyePos= getEyePosition(center.x,center.y);
+				var faceAngle= getFaceAngle(center.x, center.y);
+				context.arc(center.x, center.y, 30, faceAngle * Math.PI, (faceAngle+1.75) * Math.PI);
 				context.lineTo(center.x, center.y);
 				context.fillStyle = pac_color; //color
 				context.fill();
 				context.beginPath();
-				context.arc(center.x + 5, center.y - 15, 5, 0, 2 * Math.PI); // circle
+				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
+
 			} else if (board[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
 				context.fillStyle = "black"; //color
 				context.fill();
+			} else if (board[i][j] == 3) {
+				context.drawImage(ghostImage, i*60, j*60, 60, 60);
 			} else if (board[i][j] == 4) {
 				context.beginPath();
 				context.rect(center.x - 30, center.y - 30, 60, 60);
@@ -458,40 +470,76 @@ function Draw() {
 	}
 }
 
+function getFaceAngle(x,y){
+	var startAngle = 0.15;
+	switch(direction){ //rotate face
+		case "right":
+			break;
+		case "down":
+			startAngle+=0.5;
+			break;
+		case "left":
+			startAngle+=1;
+			break;
+		case "up":
+			startAngle+=1.5;
+			break;
+	}
+	return startAngle;
+}
+
+function getEyePosition(x,y){
+	switch(direction){ //return relative eye position
+		case "right":
+			return [x+5,y-15];
+		case "down":
+			return [x+15,y+5];
+		case "left":
+			return [x-5,y-15];
+		case "up":
+			return [x-15,y-5];
+	}
+}
+
 function UpdatePosition() {
-	board[shape.i][shape.j] = 0;
+	board[pacman.i][pacman.j] = 0;
 	var x = GetKeyPressed();
-	if (x == 1) {
-		if (shape.j > 0 && board[shape.i][shape.j - 1] != 4) {
-			shape.j--;
+	if (x == 1) { //Go up
+		if (pacman.j > 0 && board[pacman.i][pacman.j - 1] != 4) {
+			pacman.j--;
+			direction="up";
 		}
 	}
-	if (x == 2) {
-		if (shape.j < 9 && board[shape.i][shape.j + 1] != 4) {
-			shape.j++;
+	if (x == 2) { //Go down
+		if (pacman.j < 9 && board[pacman.i][pacman.j + 1] != 4) {
+			pacman.j++;
+			direction="down";
 		}
 	}
-	if (x == 3) {
-		if (shape.i > 0 && board[shape.i - 1][shape.j] != 4) {
-			shape.i--;
+	if (x == 3) { //Go left
+		if (pacman.i > 0 && board[pacman.i - 1][pacman.j] != 4) {
+			pacman.i--;
+			direction="left";
 		}
 	}
-	if (x == 4) {
-		if (shape.i < 9 && board[shape.i + 1][shape.j] != 4) {
-			shape.i++;
+	if (x == 4) { //Go right
+		if (pacman.i < 9 && board[pacman.i + 1][pacman.j] != 4) {
+			pacman.i++;
+			direction="right";
 		}
 	}
-	if (board[shape.i][shape.j] == 1) {
+	if (board[pacman.i][pacman.j] == 1) {
 		score++;
 	}
-	board[shape.i][shape.j] = 2;
+	board[pacman.i][pacman.j] = 2;
 	var currentTime = new Date();
 	time_elapsed = (currentTime - start_time) / 1000;
 	if (score >= 20 && time_elapsed <= 10) {
 		pac_color = "green";
 	}
-	if (score == 50) {
+	if (score == maxPoints) {
 		window.clearInterval(interval);
+		interval=undefined;
 		window.alert("Game completed");
 	} else {
 		Draw();
