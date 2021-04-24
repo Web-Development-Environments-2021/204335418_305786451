@@ -3,6 +3,9 @@
 	<head>
 		<script src="./jquery-3.4.1.slim.min.js"></script>
 		<script type="text/javascript" src="./app.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
+
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<title>Pacman</title>
 		<link rel="icon" href="src/icon.ico">
@@ -10,19 +13,19 @@
 
 	<body>
 		<div id="navbar">
-			<button id="1" class="pageButton 1">Welcome</button>
-			<button id="2" class="pageButton 2">Play Now</button>
-			<button id="3" class="pageButton 3">Register</button>
-			<button id="4" class="pageButton 4">Login</button>
-			<button id="5" class="pageButton 5">Settings</button>
-			<button id="6" class="pageButton 6">About</button>
+			<button class="pageButton" page=1>Welcome</button>
+			<button class="pageButton" page=2>Play Now</button>
+			<button class="pageButton" page=3>Sign Up</button>
+			<button class="pageButton" page=4>Login</button>
+			<button class="pageButton" page=5>Settings</button>
+			<button class="pageButton" page=6>About</button>
 		</div>
 		<div class="content">
 			<div id="page1">
 				<h1>Pacman!</h1>
 				<h1>LOGO</h1>
-				<button class="pageButton 3">Register</button>
-				<button class="pageButton 4">Login</button>
+				<button class="pageButton" page=3>Sign Up</button>
+				<button class="pageButton" page=4>Login</button>
 			</div>
 			<div id="page2" hidden>
 				<div id="score">
@@ -36,12 +39,45 @@
 				<canvas id="canvas" height="600" width="600"></canvas>
 			</div>
 			<div id="page3" hidden>
-				
+				<h2>Sign up to enter the game!</h2>
+				<form classs="cmxform" id="signUp" action="" method="post" enctype="text/plain">
+					<fieldset>
+						<br><br>
+						<br/>Username<br>
+						<input type="text" id="username" name="username"><br>
+
+						<br/>Password<br>
+						<input type="password" id="password" name="password"><br>
+
+						<br/>First Name<br>
+						<input type="text" id="fname" name="fname"><br>
+
+						<br/>Last Name<br>
+						<input type="text" id="lname" name="lname"><br>
+
+						<br>E-mail address<br>
+						<input type="email" id="email" name="email"><br>
+
+						<br>Birthday<br>
+						<input type="date" id="bday" name="bday"><br>
+
+						<br><br>
+						<input class="submit" type="submit" value="Submit">
+						<input class="reset" type="reset" value="Reset">
+						<br/>
+						<br/>
+					</fieldset>
+				  </form> 
 			</div>
 		</div>
 		<div id="footer">
 			<p>FOOTER HERE</p>
 		</div>
+		<script>
+			if ( window.history.replaceState ) {
+				window.history.replaceState( null, null, window.location.href );
+			}
+		</script>
 	</body>
 	
 </html>

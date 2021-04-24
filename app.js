@@ -13,16 +13,60 @@ users["oded"]={"firstName":"oded", "lasName":"Berkovich"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
 $(document).ready(function() {
-	context = canvas.getContext("2d");
-	// initPages();
-	$(".pageButton").click(function(){
-		var id = $(this).attr('class').split(/\s+/)[1];
-		alert(id);
+	initListeners();
+});
+
+function initListeners(){
+	$(".pageButton").click(function(e){
+		var id = e.target.getAttribute("page");
 		showScreen(id);
 	});
-	// alert(users["eilam"].firstName);
-	Start();
-});
+	initSignUpForm();
+	initLoginForm();
+}
+
+function initSignUpForm(){
+	$("#signUp").validate(
+		{
+			rules: {
+				fname: {
+					required:true,
+					pattern: "^[a-zA-Z]*$"
+				},
+				lname:{
+					required:true,
+					minlength:4,
+					pattern: "^[a-zA-Z]*$"
+				},
+				password: {
+					required:true,
+					checkPassword: true,
+					minlength:6
+				}
+			},
+			messages : {
+				password:{
+					checkPassword:"Please enter at least one character and one digit"
+				}
+			}
+			
+		}
+	);
+	$.validator.addMethod("checkPassword", function (value) {
+	return /[a-zA-Z]/.test(value) && /\d/.test(value); // constains a letter and a digit
+	});
+}
+
+
+// function checkPassword (value){
+// 		return /[a-z]/.test(value) && /\d/.test(value); // has a digit
+// }
+
+
+
+// function validateSignUp(form){
+	
+// }
 
 // function initPages() {
 // 	for (var i = 2; i <= 6; i++) {
@@ -32,14 +76,18 @@ $(document).ready(function() {
 // }
 
 function showScreen(pageId){
+	if(pageId==2)
+	{
+		Start();
+	}
 	var id ="#page"+pageId;
-	// alert(id);
-	$(activePageId).hide()
+	$(activePageId).hide();
 	$(id).show();
 	activePageId=id;
 }
 
 function Start() {
+	context = canvas.getContext("2d");
 	board = new Array();
 	score = 0;
 	pac_color = "yellow";
