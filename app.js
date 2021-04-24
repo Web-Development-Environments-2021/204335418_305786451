@@ -18,37 +18,77 @@ $(document).ready(function() {
 });
 
 function initListeners(){
+	initButtons();
+	initSignUpForm();
+	initLoginForm();
+	initSettings();
+}
+
+function initButtons(){
 	$(".pageButton").click(function(e){
 		var id = e.target.getAttribute("page");
 		showScreen(id);
 	});
-	initSignUpForm();
-	initLoginForm();
-	initSettings();
+	initAboutModal();
+}
+
+function initAboutModal() {
+	var about = document.getElementById("about");
+	$(".aboutButton").click(function () {
+		about.style.display = "block";
+	});
+	var span = document.getElementsByClassName("close")[0];
+	span.onclick = function () {
+		about.style.display = "none";
+	};
+	window.onclick = function (e) {
+		if (e.target == document.getElementById("about")) {
+			about.style.display = "none";
+		}
+	};
+	window.onkeyup = function(e) {
+		if(e.keyCode==27) 
+			about.style.display = "none" ;
+	}
+	
 }
 
 function initSignUpForm(){
 	$("#signUp").validate(
 		{
 			rules: {
+				username: {
+					required: true,
+					checkUsername: true
+				},
 				fname: {
 					required:true,
 					pattern: "^[a-zA-Z]*$"
 				},
 				lname:{
 					required:true,
-					minlength:4,
 					pattern: "^[a-zA-Z]*$"
 				},
 				password: {
 					required:true,
 					checkPassword: true,
 					minlength:6
-				}
+				},
+				email:"required",
+				bday :"required"
 			},
 			messages : {
+				fname:{
+					pattern:"No digits allowed"
+				},
+				lname:{
+					pattern:"No digits allowed"
+				},
 				password:{
 					checkPassword:"Please enter at least one character and one digit"
+				},
+				username:{
+					checkUsername:"Username already exists, please choose another one"
 				}
 			}
 			
@@ -57,7 +97,17 @@ function initSignUpForm(){
 	$.validator.addMethod("checkPassword", function (value) {
 	return /[a-zA-Z]/.test(value) && /\d/.test(value); // constains a letter and a digit
 	});
+	$.validator.addMethod("checkUsername", function (value) {
+		return !(value in users); // username already exists
+	});
+	
 }
+
+function addNewUser(){
+	var form =  document.getElementById("signUp");
+	form.reset();
+}
+
 function initLoginForm(){
 	$("#Login").submit(function(e){
 		e.preventDefault();
@@ -122,7 +172,7 @@ function showScreen(pageId){
 }
 
 function validateLogin(form){
-	var username = form["userName"].value;
+	var username = form["username"].value;
 	var password = form["password"].value;
 	var loginSuccess = false;
 	if(username in users)
