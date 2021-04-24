@@ -10,6 +10,12 @@ var login = false;
 var activePageId='#page1';
 var users=[];
 var activeUser="";
+var playingKeys = [];
+playingKeysSetup(playingKeys);
+var chosenPlayingKeys=[];
+playingKeysSetup(chosenPlayingKeys);
+var chosenKey=0;
+
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
@@ -74,25 +80,48 @@ function initLoginForm(){
 }
 
 function initSettings(){
-	$("#upKey").blur(function(){
+	
+
+	$("#setPlayingKeys").submit(function(e){
+		e.preventDefault();
+		
+		if(validateChoosenKeys()){
+			copyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
+		}
+		else{
+			copyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
+
+			alert("You have chosen the same key twice. Please try again");
+		}
+		resetSetPlayingKeysForm();
+		// var tmp = document.getElementById("#upKey").value;
+		// alert(""+tmp);
+		e.target.reset();
+		showScreen(5);
+	});
+	$("#upKey").blur(function(e){
+		insertChoosenKey(e.target,"up");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#upKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	$("#downKey").blur(function(){
+	$("#downKey").blur(function(e){
+		insertChoosenKey(e.target,"down");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#downKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	$("#leftKey").blur(function(){
+	$("#leftKey").blur(function(e){
+		insertChoosenKey(e.target,"left");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#leftKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	$("#rightKey").blur(function(){
+	$("#rightKey").blur(function(e){
+		insertChoosenKey(e.target,"right");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#rightKey").focus(function(e){
@@ -108,7 +137,105 @@ function initSettings(){
 // 	}
 // }
 function chooseKey(e){
-	e.target.value=event.key;
+	chosenKey=e.keyCode;
+	// e.target.value=e.keyCode;
+	if(chosenKey>=65 && chosenKey<=90)
+		e.target.value=String.fromCharCode(chosenKey);
+	else{
+		e.target.value=e.key;
+	}
+}
+function validateChoosenKeys(){
+	for(var key1 in chosenPlayingKeys){
+		for(var key2 in chosenPlayingKeys){
+			if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
+				return false;
+			}
+		}
+	}
+	return true;
+}
+function insertChoosenKey(targetButton, keyType){
+	if(keyType=="left"){
+		chosenPlayingKeys["left"].keyCode=chosenKey;
+		chosenPlayingKeys["left"].keyName=targetButton.value;
+	}
+	else if(keyType=="right"){
+		chosenPlayingKeys["right"].keyCode=chosenKey;
+		chosenPlayingKeys["right"].keyName=targetButton.vale;
+	}	
+	else if(keyType=="up"){
+		chosenPlayingKeys["up"].keyCode=chosenKey;
+		chosenPlayingKeys["up"].keyName=targetButton.value;
+	}
+	else{
+		chosenPlayingKeys["down"].keyCode=chosenKey;
+		chosenPlayingKeys["down"].keyName=targetButton.value;
+	}
+
+	// if(chosenKey==playingKeys["left"].keyCode && key!="left"){
+	// 	targetButton.value=leftKeyName;
+	// 	alert("This key is already used.");
+	// } 
+	// else if(chosenKey==playingKeys["right"].keyCode && key!="right"){
+	// 	targetButton.value=rightKeyName;
+	// 	alert("This key is already used.");
+	// }
+	// else if(chosenKey==playingKeys["up"].keyCode && key!="up"){
+	// 	targetButton.value=upKeyName;
+	// 	alert("This key is already used.");
+	// } 
+	// else if(chosenKey==playingKeys["down"].keyCode && key!="down"){
+	// 	targetButton.value=downKeyName;
+	// 	alert("This key is already used.");
+	// }
+	// else{
+	// 	if(key=="left"){
+	// 		playingKeys["left"].keyCode=choosenKey;
+	// 		playingKeys["left"].keyName=targetButton.value;
+	// 	}
+	// 	else if(key=="right"){
+	// 		playingKeys["right"].keyCode=choosenKey;
+	// 		playingKeys["right"].keyName=targetButton.vale;
+	// 	}	
+	// 	else if(key=="up"){
+	// 		playingKeys["up"].keyCode=choosenKey;
+	// 		playingKeys["up"].keyName=targetButton.value;
+	// 	}
+	// 	else{
+	// 		playingKeys["down"].keyCode=choosenKey;
+	// 		playingKeys["down"].keyName=targetButton.value;
+	// 	}
+	// }
+}
+function copyPlayingKeysDicts(copyFrom, copyTo){
+	copyTo["left"].keyCode=copyFrom["left"].keyCode;
+	copyTo["left"].keyName=copyFrom["left"].keyName;
+	copyTo["right"].keyCode=copyFrom["right"].keyCode;
+	copyTo["right"].keyName=copyFrom["right"].keyName;
+	copyTo["up"].keyCode=copyFrom["up"].keyCode;
+	copyTo["up"].keyName=copyFrom["up"].keyName;
+	copyTo["down"].keyCode=copyFrom["down"].keyCode;
+	copyTo["down"].keyName=copyFrom["down"].keyName;
+}
+function resetSetPlayingKeysForm(){
+	// var tmp = document.getElementById("#upKey").value;
+	// alert(""+tmp);
+	$("#upKey")[0].value=playingKeys["up"].keyName;
+	$("#downKey")[0].value=playingKeys["down"].keyName;
+	$("#leftKey")[0].value=playingKeys["left"].keyName;
+	$("#rightKey")[0].value=playingKeys["right"].keyName;
+
+	// document.getElementById("#upKey").value=playingKeys["up"].keyName;
+	// document.getElementById("#downKey").value=playingKeys["down"].keyName;
+	// document.getElementById("#leftKey").value=playingKeys["left"].keyName;
+	// document.getElementById("#rightKey").value=playingKeys["right"].keyName;
+}
+function playingKeysSetup(keysArray){
+	keysArray["left"]={"keyCode":37, "keyName":"ArrowLeft"};
+	keysArray["right"]={"keyCode":39, "keyName":"ArrowRight"};
+	keysArray["up"]={"keyCode":38, "keyName":"ArrowUp"};
+	keysArray["down"]={"keyCode":40, "keyName":"ArrowDown"};
 }
 function showScreen(pageId){
 	if(pageId==2)
@@ -122,7 +249,7 @@ function showScreen(pageId){
 }
 
 function validateLogin(form){
-	var username = form["userName"].value;
+	var username = form["username"].value;
 	var password = form["password"].value;
 	var loginSuccess = false;
 	if(username in users)
@@ -209,16 +336,28 @@ function findRandomEmptyCell(board) {
 }
 
 function GetKeyPressed() {
-	if (keysDown[38]) {
+	// if (keysDown[38]) {
+	// 	return 1;
+	// }
+	// if (keysDown[40]) {
+	// 	return 2;
+	// }
+	// if (keysDown[37]) {
+	// 	return 3;
+	// }
+	// if (keysDown[39]) {playingKeys
+	// 	return 4;
+	// }
+	if (keysDown[playingKeys["up"].keyCode]) {
 		return 1;
 	}
-	if (keysDown[40]) {
+	if (keysDown[playingKeys["down"].keyCode]) {
 		return 2;
 	}
-	if (keysDown[37]) {
+	if (keysDown[playingKeys["left"].keyCode]) {
 		return 3;
 	}
-	if (keysDown[39]) {
+	if (keysDown[playingKeys["right"].keyCode]) {
 		return 4;
 	}
 }
