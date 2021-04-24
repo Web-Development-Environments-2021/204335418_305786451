@@ -24,6 +24,7 @@ function initListeners(){
 	initSignUpForm();
 	initLoginForm();
 	initSettings();
+	initAboutModal();
 }
 
 function initButtons(){
@@ -31,7 +32,6 @@ function initButtons(){
 		var id = e.target.getAttribute("page");
 		showScreen(id);
 	});
-	initAboutModal();
 }
 
 function initAboutModal() {
@@ -123,13 +123,9 @@ function initLoginForm(){
 		e.preventDefault();
 		var screen;
 		if(validateLogin(e.target)){
-			screen=2;
-		}
-		else{
-			screen=4;
+			showScreen(5);
 		}
 		e.target.reset();
-		showScreen(screen);
 	});
 }
 
@@ -160,13 +156,6 @@ function initSettings(){
 	});
 }
 
-
-// function initPages() {
-// 	for (var i = 2; i <= 6; i++) {
-// 		var id = "#page" + i;
-// 		$(id).hide();
-// 	}
-// }
 function chooseKey(e){
 	e.target.value=e.key;
 }
