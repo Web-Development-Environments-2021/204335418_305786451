@@ -6,10 +6,11 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-
+var login = false;
 var activePageId='#page1';
 var users=[];
-users["oded"]={"firstName":"oded", "lasName":"Berkovich"};
+var activeUser="";
+users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
 $(document).ready(function() {
@@ -23,6 +24,7 @@ function initListeners(){
 	});
 	initSignUpForm();
 	initLoginForm();
+	initSettings();
 }
 
 function initSignUpForm(){
@@ -56,17 +58,48 @@ function initSignUpForm(){
 	return /[a-zA-Z]/.test(value) && /\d/.test(value); // constains a letter and a digit
 	});
 }
+function initLoginForm(){
+	$("#Login").submit(function(e){
+		e.preventDefault();
+		var screen;
+		if(validateLogin(e.target)){
+			screen=2;
+		}
+		else{
+			screen=4;
+		}
+		e.target.reset();
+		showScreen(screen);
+	});
+}
 
+function initSettings(){
+	$("#upKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	});
+	$("#upKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	});
+	$("#downKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	});
+	$("#downKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	});
+	$("#leftKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	});
+	$("#leftKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	});
+	$("#rightKey").blur(function(){
+		document.removeEventListener('keydown',chooseKey);
+	});
+	$("#rightKey").focus(function(e){
+		document.addEventListener('keydown' ,chooseKey);
+	});
+}
 
-// function checkPassword (value){
-// 		return /[a-z]/.test(value) && /\d/.test(value); // has a digit
-// }
-
-
-
-// function validateSignUp(form){
-	
-// }
 
 // function initPages() {
 // 	for (var i = 2; i <= 6; i++) {
@@ -74,7 +107,9 @@ function initSignUpForm(){
 // 		$(id).hide();
 // 	}
 // }
-
+function chooseKey(e){
+	e.target.value=event.key;
+}
 function showScreen(pageId){
 	if(pageId==2)
 	{
@@ -84,6 +119,22 @@ function showScreen(pageId){
 	$(activePageId).hide();
 	$(id).show();
 	activePageId=id;
+}
+
+function validateLogin(form){
+	var username = form["userName"].value;
+	var password = form["password"].value;
+	var loginSuccess = false;
+	if(username in users)
+		loginSuccess= users[username].password==password;
+	if(loginSuccess){
+		login=true;
+		activeUser=username;
+	}
+	else{
+		alert("You entered an incorrect username or password.\n Please try again.");
+	}
+	return loginSuccess;
 }
 
 function Start() {
