@@ -1,6 +1,8 @@
-var ghostImage;
 var context;
-var pacman = new Object();
+var pacman = {
+	i:1,
+	j:1
+};
 var board;
 var score;
 var pac_color;
@@ -11,17 +13,23 @@ var intervalSet = false;
 var loggedIn = true;
 var activePageId='#page1';
 var users=[];
-var intervalLength=100;
+var intervalLength=150;
 var activeUser="";
 var maxPoints=50;
 var playingKeys = [];
-playingKeysSetup(playingKeys);
+PlayingKeysSetup(playingKeys);
 var chosenPlayingKeys=[];
-playingKeysSetup(chosenPlayingKeys);
+PlayingKeysSetup(chosenPlayingKeys);
 var chosenKey=0;
-var ghosts=[];
+
+var ghostImages=[];
+var ghosts=[]; //
+var ghostsAmount=3; //user's settings
+var activeGhosts=ghostsAmount; //ghosts in game
 
 var direction="left";
+
+var lives = 5
 
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
@@ -32,8 +40,150 @@ $(document).ready(function() {
 });
 
 function initImages(){
-	ghostImage = new Image();
-	ghostImage.src= "images/ghost.png";
+	ghostImages[0] = new Image();
+	ghostImages[0].src= "images/blue.png";
+	ghostImages[1] = new Image();
+	ghostImages[1].src= "images/red.png";
+	ghostImages[2] = new Image();
+	ghostImages[2].src= "images/green.png";
+	ghostImages[3] = new Image();
+	ghostImages[3].src= "images/yellow.png";
+}
+
+function initGhosts(){
+	for(var i=0; i<4; i++){ //initialize objects
+		ghosts.push(
+			{
+				i:0,
+				j:0,
+				image:ghostImages[i],
+				show:true
+			}
+		);
+	}
+	repositionGhosts();
+}
+
+function repositionGhosts(){
+	//update starting positions to corners
+	ghosts[0].i=0; 
+	ghosts[0].j=0;
+	ghosts[0].show = (activeGhosts>1);
+
+	ghosts[1].i=0; 
+	ghosts[1].j=9;
+	ghosts[1].show = (activeGhosts>1);
+	
+	ghosts[2].i=9; 
+	ghosts[2].j=0;
+	ghosts[2].show = (activeGhosts>2);
+
+	ghosts[3].i=9; 
+	ghosts[3].j=9;
+	ghosts[3].show = (activeGhosts>3);
+}
+
+function drawGhost(ghost){
+	context.drawImage(ghost.image, ghost.i*60, ghost.j*60, 60, 60);
+}
+
+function updateCollisions(){
+	ghosts.forEach((ghost)=>{
+		if (ghost.i==pacman.i && ghost.j==pacman.j && ghost.show)
+			getHit();
+			return;
+	});
+}
+
+function getHit(){
+	score-=10;
+	lives--;
+	if (lives==0){
+		gameOver();
+	}
+	repositionGhosts();
+	removeFromScreen(pacman);
+	repositionPacman();
+}
+
+function gameOver(){
+	alert("You Lost!");
+	restart();
+}
+
+function restart(){
+	lives=5;
+	score=0;
+	activeGhosts=ghostsAmount;
+	Start();
+}
+function repositionPacman() {
+	var emptyCell = FindRandomEmptyCell(board);
+	pacman.i = emptyCell[0];
+	pacman.j = emptyCell[1];
+}
+
+function removeFromScreen(drawing){
+	context.clearRect(drawing.i*60,drawing.j*60,60,60);
+	board[drawing.i][drawing.j] = 0;
+}
+
+function moveGhosts(){
+	ghosts.forEach((ghost)=>{
+		if (ghost.show){
+			// var i = ghost.i;
+			// var j = ghost.j;
+			// var before = board[i][j];
+
+			var move= getBestMove(ghost);
+			// removeFromScreen(ghost);
+			ghost.i=move[0];
+			ghost.j=move[1];
+			// board
+			board[move[0]][move[1]]=3;
+
+		}
+	});
+}
+
+function getBestMove(ghost){
+	var manhattan=21;
+	var i = ghost.i;
+	var j = ghost.j;
+	var tempi = 0;
+	var tempj = 0;
+	if (j > 0 && board[i][j - 1] != 4) {
+		if (Math.abs(i-pacman.i)+Math.abs((j-1)-pacman.j)<manhattan){
+			tempi = i;
+			tempj = j-1;
+			manhattan = Math.abs(i-pacman.i)+Math.abs((j-1)-pacman.j);
+		}
+	}
+	if (j < 9 && board[i][j + 1] != 4) {
+		if (Math.abs(i-pacman.i)+Math.abs((j+1)-pacman.j)<manhattan){
+			tempi = i;
+			tempj = j+1;
+			manhattan = Math.abs(i-pacman.i)+Math.abs((j+1)-pacman.j);
+		}
+	}
+
+	if (i > 0 && board[i - 1][j] != 4) {
+		if (Math.abs((i-1)-pacman.i)+Math.abs(j-pacman.j)<manhattan){
+			tempi = i-1;
+			tempj = j;
+			manhattan = Math.abs((i-1)-pacman.i)+Math.abs(j-pacman.j);
+		}
+	}
+
+	if (i < 9 && board[i + 1][j] != 4) {
+		if (Math.abs((i+1)-pacman.i)+Math.abs(j-pacman.j)<manhattan){
+			tempi = i+1;
+			tempj = j;
+			manhattan = Math.abs((i+1)-pacman.i)+Math.abs(j-pacman.j);
+		}
+	}
+	return [tempi,tempj];
+
 }
 function initListeners(){
 	initButtons();
@@ -46,7 +196,7 @@ function initListeners(){
 function initButtons(){
 	$(".pageButton").click(function(e){
 		var id = e.target.getAttribute("page");
-		showScreen(id);
+		ShowScreen(id);
 	});
 }
 
@@ -137,8 +287,8 @@ function initLoginForm(){
 	$("#Login").submit(function(e){
 		e.preventDefault();
 		var screen;
-		if(validateLogin(e.target)){
-			showScreen(5);
+		if(ValidateLogin(e.target)){
+			ShowScreen(5);
 		}
 		e.target.reset();
 	});
@@ -150,42 +300,42 @@ function initSettings(){
 		e.preventDefault();
 		
 		if(validateChoosenKeys()){
-			copyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
+			CopyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
 		}
 		else{
-			copyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
+			CopyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
 
 			alert("You have chosen the same key twice. Please try again");
 		}
-		resetSetPlayingKeysForm();
+		ResetSetPlayingKeysForm();
 		// var tmp = document.getElementById("#upKey").value;
 		// alert(""+tmp);
 		e.target.reset();
-		showScreen(5);
+		ShowScreen(5);
 	});
 	$("#upKey").blur(function(e){
-		insertChosenKey(e.target,"up");
+		InsertChosenKey(e.target,"up");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#upKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#downKey").blur(function(e){
-		insertChosenKey(e.target,"down");
+		InsertChosenKey(e.target,"down");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#downKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#leftKey").blur(function(e){
-		insertChosenKey(e.target,"left");
+		InsertChosenKey(e.target,"left");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#leftKey").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
 	$("#rightKey").blur(function(e){
-		insertChosenKey(e.target,"right");
+		InsertChosenKey(e.target,"right");
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$("#rightKey").focus(function(e){
@@ -212,7 +362,7 @@ function validateChoosenKeys(){
 	}
 	return true;
 }
-function insertChosenKey(targetButton, keyType){
+function InsertChosenKey(targetButton, keyType){
 	if(keyType=="left"){
 		chosenPlayingKeys["left"].keyCode=chosenKey;
 		chosenPlayingKeys["left"].keyName=targetButton.value;
@@ -265,7 +415,7 @@ function insertChosenKey(targetButton, keyType){
 	// 	}
 	// }
 }
-function copyPlayingKeysDicts(copyFrom, copyTo){
+function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["left"].keyCode=copyFrom["left"].keyCode;
 	copyTo["left"].keyName=copyFrom["left"].keyName;
 	copyTo["right"].keyCode=copyFrom["right"].keyCode;
@@ -275,7 +425,7 @@ function copyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["down"].keyCode=copyFrom["down"].keyCode;
 	copyTo["down"].keyName=copyFrom["down"].keyName;
 }
-function resetSetPlayingKeysForm(){
+function ResetSetPlayingKeysForm(){
 	// var tmp = document.getElementById("#upKey").value;
 	// alert(""+tmp);
 	$("#upKey")[0].value=playingKeys["up"].keyName;
@@ -288,31 +438,44 @@ function resetSetPlayingKeysForm(){
 	// document.getElementById("#leftKey").value=playingKeys["left"].keyName;
 	// document.getElementById("#rightKey").value=playingKeys["right"].keyName;
 }
-function playingKeysSetup(keysArray){
+function PlayingKeysSetup(keysArray){
 	keysArray["left"]={"keyCode":37, "keyName":"ArrowLeft"};
 	keysArray["right"]={"keyCode":39, "keyName":"ArrowRight"};
 	keysArray["up"]={"keyCode":38, "keyName":"ArrowUp"};
 	keysArray["down"]={"keyCode":40, "keyName":"ArrowDown"};
 	// e.target.value=e.key;
 }
-function showScreen(pageId){
+function ShowScreen(pageId){
+	if (activePageId==2 && pageId!=2){
+		window.clearInterval(interval);
+		window.clearInterval(ghostsinterval);
+
+	}
 	if(pageId==2)
 	{
-		if (loggedIn)
-			Start();
-		else {
+		if (!loggedIn){
 			alert("You must be logged in to play the game!");
-			showScreen(4);
+			ShowScreen(4);
 			return;
+
+			// Start();
+			// return;
 		}
+		// else {
+		// 	alert("You must be logged in to play the game!");
+		// 	ShowScreen(4);
+		// 	return;
+		// }
 	}
 	var id ="#page"+pageId;
 	$(activePageId).hide();
 	$(id).show();
 	activePageId=id;
+	if(pageId==2)
+		Start();
 }
 
-function validateLogin(form){
+function ValidateLogin(form){
 	var username = form["username"].value;
 	var password = form["password"].value;
 	var loginSuccess = false;
@@ -327,8 +490,9 @@ function validateLogin(form){
 	}
 	return loginSuccess;
 }
-
+var ghostsinterval;
 function Start() {
+	ghosts=[];
 	context = canvas.getContext("2d");
 	board = new Array();
 	score = 0;
@@ -336,6 +500,8 @@ function Start() {
 	var cnt = 100;
 	var food_remain = 50;
 	var pacman_remain = 1;
+	var ghosts_remain = ghostsAmount;
+
 	start_time = new Date();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
@@ -352,9 +518,7 @@ function Start() {
 				board[i][j] = 4;
 			} else {
 				var randomNum = Math.random();
-				// console.log("random",randomNum);
 				if (randomNum <= (1.0 * food_remain) / cnt) {
-					console.log("value",food_remain);
 					food_remain--;
 					board[i][j] = 1;
 				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
@@ -370,7 +534,7 @@ function Start() {
 		}
 	}
 	while (food_remain > 0) {
-		var emptyCell = findRandomEmptyCell(board);
+		var emptyCell = FindRandomEmptyCell(board);
 		board[emptyCell[0]][emptyCell[1]] = 1;
 		food_remain--;
 	}
@@ -389,12 +553,18 @@ function Start() {
 		},
 		false
 	);
+	initGhosts();
+
 	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
+		ghostsinterval = setInterval(moveGhosts, intervalLength+75);
+
 	}
+
+
 }
 
-function findRandomEmptyCell(board) {
+function FindRandomEmptyCell(board) { //INSERT GHOSTS LOCATIONS
 	var i = Math.floor(Math.random() * 9 + 1);
 	var j = Math.floor(Math.random() * 9 + 1);
 	while (board[i][j] != 0) {
@@ -442,8 +612,8 @@ function Draw() {
 			center.y = j * 60 + 30;
 			if (board[i][j] == 2) {
 				context.beginPath();
-				var eyePos= getEyePosition(center.x,center.y);
-				var faceAngle= getFaceAngle(center.x, center.y);
+				var eyePos= GetEyePosition(center.x,center.y);
+				var faceAngle= GetFaceAngle(center.x, center.y);
 				context.arc(center.x, center.y, 30, faceAngle * Math.PI, (faceAngle+1.75) * Math.PI);
 				context.lineTo(center.x, center.y);
 				context.fillStyle = pac_color; //color
@@ -452,14 +622,11 @@ function Draw() {
 				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
-
 			} else if (board[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
 				context.fillStyle = "black"; //color
 				context.fill();
-			} else if (board[i][j] == 3) {
-				context.drawImage(ghostImage, i*60, j*60, 60, 60);
 			} else if (board[i][j] == 4) {
 				context.beginPath();
 				context.rect(center.x - 30, center.y - 30, 60, 60);
@@ -468,9 +635,11 @@ function Draw() {
 			}
 		}
 	}
+	for(var i=0; i<activeGhosts; i++)
+		drawGhost(ghosts[i]);
 }
 
-function getFaceAngle(x,y){
+function GetFaceAngle(x,y){
 	var startAngle = 0.15;
 	switch(direction){ //rotate face
 		case "right":
@@ -488,7 +657,7 @@ function getFaceAngle(x,y){
 	return startAngle;
 }
 
-function getEyePosition(x,y){
+function GetEyePosition(x,y){
 	switch(direction){ //return relative eye position
 		case "right":
 			return [x+5,y-15];
@@ -532,6 +701,8 @@ function UpdatePosition() {
 		score++;
 	}
 	board[pacman.i][pacman.j] = 2;
+	updateCollisions();
+	// moveGhosts();
 	var currentTime = new Date();
 	time_elapsed = (currentTime - start_time) / 1000;
 	if (score >= 20 && time_elapsed <= 10) {
@@ -539,6 +710,7 @@ function UpdatePosition() {
 	}
 	if (score == maxPoints) {
 		window.clearInterval(interval);
+		window.clearInterval(ghostsinterval);
 		interval=undefined;
 		window.alert("Game completed");
 	} else {
