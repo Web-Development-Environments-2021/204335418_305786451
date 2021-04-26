@@ -31,9 +31,9 @@ gameSettings = {
 };
 
 PlayingKeysSetup(gameSettings.playingKeys);
-gameSettings.ballsSetting["A"]={color:"#ff0000", potints:5};
-gameSettings.ballsSetting["B"]={color:"#00fa3e", potints:10};
-gameSettings.ballsSetting["C"]={color:"#000000", potints:15};
+gameSettings.ballsSetting["A"]={color:"#ff0000", points:5};
+gameSettings.ballsSetting["B"]={color:"#00fa3e", points:10};
+gameSettings.ballsSetting["C"]={color:"#000000", points:15};
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
@@ -46,7 +46,7 @@ var food;
 var ghostImages=[];
 var ghosts=[]; //
 var ghostsAmount=3; //user's settings
-var activeGhosts=gameSettings.monstersAmount; //ghosts in game
+var activeGhosts; //ghosts in game
 
 var direction="left";
 
@@ -103,9 +103,9 @@ function repositionGhosts(){
 	//positions ghosts in corners
 	ghosts[0].i=0; 
 	ghosts[0].j=0;
-	ghosts[0].show = (activeGhosts>1);
+	ghosts[0].show = (activeGhosts>0);
 
-	ghosts[1].i=0; 
+	ghosts[1].i=9; 
 	ghosts[1].j=9;
 	ghosts[1].show = (activeGhosts>1);
 	
@@ -113,7 +113,7 @@ function repositionGhosts(){
 	ghosts[2].j=0;
 	ghosts[2].show = (activeGhosts>2);
 
-	ghosts[3].i=9; 
+	ghosts[3].i=0; 
 	ghosts[3].j=9;
 	ghosts[3].show = (activeGhosts>3);
 }
@@ -148,7 +148,6 @@ function restart(){
 	lives=5;
 	score=0;
 	movingFood.show=true;
-	activeGhosts=ghostsAmount;
 	Start();
 }
 function repositionPacman() {
@@ -543,12 +542,12 @@ function setSettings(){
 	gameSettings.ballsAmount = form.ballsAmount.value;
 	gameSettings.gameTime = form.gameTime.value;
 	gameSettings.ballsSetting["A"].color=form.colorA.value;
-	gameSettings.ballsSetting["A"].potints=form.pointsA.value;
+	gameSettings.ballsSetting["A"].points=form.pointsA.value;
 	gameSettings.ballsSetting["B"].color=form.colorB.value;
-	gameSettings.ballsSetting["B"].potints=form.pointsB.value;
+	gameSettings.ballsSetting["B"].points=form.pointsB.value;
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
-	gameSettings.ballsSetting["C"].potints=form.pointsC.value;
-	gameSettings.monstersAmount=form.monstersAmount.selectedIndex;
+	gameSettings.ballsSetting["C"].points=form.pointsC.value;
+	gameSettings.monstersAmount=form.monstersAmount.value;
 	alert("New game settings!!!")
 	ShowScreen("2");
 }
@@ -623,11 +622,11 @@ function resetSettingForm(){
 	form.gameTime.value=gameSettings.gameTime;
 	form.monstersAmount.selectedIndex=gameSettings.monstersAmount;
 	form.colorA.value=gameSettings.ballsSetting["A"].color;
-	form.pointsA.value=gameSettings.ballsSetting["A"].potints;
+	form.pointsA.value=gameSettings.ballsSetting["A"].points;
 	form.colorB.value=gameSettings.ballsSetting["B"].color;
-	form.pointsB.value=gameSettings.ballsSetting["B"].potints;
+	form.pointsB.value=gameSettings.ballsSetting["B"].points;
 	form.colorC.value=gameSettings.ballsSetting["C"].color;
-	form.pointsC.value=gameSettings.ballsSetting["C"].potints;
+	form.pointsC.value=gameSettings.ballsSetting["C"].points;
 }
 function ResetSetPlayingKeysForm(){
 	// var tmp = document.getElementById("#upKey").value;
@@ -701,6 +700,7 @@ function Start() {
 	food = new Array();
 	score = 0;
 	ammo = ammoAmount;
+	activeGhosts=parseInt(gameSettings.monstersAmount);
 	pac_color = "yellow";
 	maxPoints= 50 + parseInt(gameSettings.ballsAmount);
 	movingFood.i=5;
@@ -915,8 +915,7 @@ function UpdatePosition() {
 	}
 	openMouth=!openMouth;
 	board[pacman.i][pacman.j] = 2;
-	moveFood();
-	updateCollisions();
+	
 	if (lives==0){
 		alert("Loser!");
 		restart();
@@ -955,4 +954,6 @@ function UpdatePosition() {
  	} else {
 		Draw();
 	}
+	moveFood();
+	updateCollisions();
 }
