@@ -12,19 +12,25 @@ var activePageId='#page1';
 var users=[];
 var intervalLength=100;
 var activeUser="";
-var playingKeys = [];
-playingKeysSetup(playingKeys);
+// var playingKeys = [];
+// playingKeysSetup(playingKeys);
 var chosenPlayingKeys=[];
 playingKeysSetup(chosenPlayingKeys);
 var chosenKey=0;
-
+gameSettings = {
+	playingKeys: [],
+	ballsAmount: 50,
+	ballsSettings: [],
+	gameTime: 60,
+	monstersAmount: 1,
+};
+playingKeysSetup(gameSettings.playingKeys);
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
 
 $(document).ready(function() {
-	alert("sad");
 	initListeners();
 });
 
@@ -143,53 +149,106 @@ function initLoginForm(){
 }
 
 function initSettings(){
-	
+	$("#settings").validate(
+		{
+			rules: {
+				playingKeys: {
+					required: true,
+					checkChoosenKeys: true,
+				},
+				ballsAmount: {
+					required:true,
+					checkBallsAmount: true,
+				},
+				ballColor:{
+					required:true,
+				},
+				gameTime: {
+					required:true,
+					checkGameTime: true,
+				},
 
-	$("#setPlayingKeys").submit(function(e){
-		e.preventDefault();
+			},
+			messages : {
+				playingKeys:{
+					checkChoosenKeys:"You have chosen the same key twice. Please try again"
+				},
+				ballsAmount:{
+					pattern:"No digits allowed"
+				},
+				ballColor:{
+					checkPassword:"Please enter at least one character and one digit"
+				},
+				gameTime:{
+					checkGameTime:"The minimum time for a game is 60 secondes"
+				}
+			}
+			
+		});
+	$.validator.addMethod("checkBallsAmount", function (value) {
+		return value>=60 && value<=90; 
+	});
+	$.validator.addMethod("checkChoosenKeys", function (value) {
+		return validateChoosenKeys(); 
+	});
+	$.validator.addMethod("checkGameTime", function (value) {
+		return value>=60; 
+	});
+
+
+	// $("#settings").submit(function(e){
+	// 	e.preventDefault();
 		
-		if(validateChoosenKeys()){
-			copyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
-		}
-		else{
-			copyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
+	// 	if(validateChoosenKeys()){
+	// 		copyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
+	// 	}
+	// 	else{
+	// 		copyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
 
-			alert("You have chosen the same key twice. Please try again");
-		}
-		resetSetPlayingKeysForm();
-		// var tmp = document.getElementById("#upKey").value;
-		// alert(""+tmp);
-		e.target.reset();
-		showScreen(5);
-	});
-	$("#upKey").blur(function(e){
-		insertChosenKey(e.target,"up");
+	// 		alert("You have chosen the same key twice. Please try again");
+	// 	}
+	// 	resetSetPlayingKeysForm();
+	// 	// var tmp = document.getElementById("#upKey").value;
+	// 	// alert(""+tmp);
+	// 	e.target.reset();
+	// 	showScreen(5);
+	// });
+	//playingKeySettings
+	$(".playingKeySettings").blur(function(e){
+		insertChosenKey(e.target,e.target.name);
 		document.removeEventListener('keydown',chooseKey);
 	});
-	$("#upKey").focus(function(e){
+	$(".playingKeySettings").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	$("#downKey").blur(function(e){
-		insertChosenKey(e.target,"down");
-		document.removeEventListener('keydown',chooseKey);
-	});
-	$("#downKey").focus(function(e){
-		document.addEventListener('keydown' ,chooseKey);
-	});
-	$("#leftKey").blur(function(e){
-		insertChosenKey(e.target,"left");
-		document.removeEventListener('keydown',chooseKey);
-	});
-	$("#leftKey").focus(function(e){
-		document.addEventListener('keydown' ,chooseKey);
-	});
-	$("#rightKey").blur(function(e){
-		insertChosenKey(e.target,"right");
-		document.removeEventListener('keydown',chooseKey);
-	});
-	$("#rightKey").focus(function(e){
-		document.addEventListener('keydown' ,chooseKey);
-	});
+	// $("#upKey").blur(function(e){
+	// 	insertChosenKey(e.target,"up");
+	// 	document.removeEventListener('keydown',chooseKey);
+	// });
+	// $("#upKey").focus(function(e){
+	// 	document.addEventListener('keydown' ,chooseKey);
+	// });
+	// $("#downKey").blur(function(e){
+	// 	insertChosenKey(e.target,"down");
+	// 	document.removeEventListener('keydown',chooseKey);
+	// });
+	// $("#downKey").focus(function(e){
+	// 	document.addEventListener('keydown' ,chooseKey);
+	// });
+	// $("#leftKey").blur(function(e){
+	// 	insertChosenKey(e.target,"left");
+	// 	document.removeEventListener('keydown',chooseKey);
+	// });
+	// $("#leftKey").focus(function(e){
+	// 	document.addEventListener('keydown' ,chooseKey);
+	// });
+	// $("#rightKey").blur(function(e){
+	// 	insertChosenKey(e.target,"right");
+	// 	document.removeEventListener('keydown',chooseKey);
+	// });
+	// $("#rightKey").focus(function(e){
+	// 	document.addEventListener('keydown' ,chooseKey);
+	// });
 }
 
 
@@ -199,14 +258,25 @@ function initSettings(){
 // 		$(id).hide();
 // 	}
 // }
+
+function setSettings(){
+	var form = document.getElementById("#settings");
+	copyPlayingKeysDicts(chosenPlayingKeys, gameSettings.playingKeys);
+	gameSettings.ballsAmount = form.ballsAmount;
+	gameSettings.gameTime = form.gameTime;
+	// gameTime: 60,
+	// monstersAmount: 1,
+
+}
 function chooseKey(e){
 	chosenKey=e.keyCode;
 	// e.target.value=e.keyCode;
 	if(chosenKey>=65 && chosenKey<=90)
 		e.target.value=String.fromCharCode(chosenKey);
-	else{
+	else if(chosenKey==32)
+		e.target.value="Space";
+	else
 		e.target.value=e.key;
-	}
 }
 function validateChoosenKeys(){
 	for(var key1 in chosenPlayingKeys){
@@ -225,7 +295,7 @@ function insertChosenKey(targetButton, keyType){
 	}
 	else if(keyType=="right"){
 		chosenPlayingKeys["right"].keyCode=chosenKey;
-		chosenPlayingKeys["right"].keyName=targetButton.vale;
+		chosenPlayingKeys["right"].keyName=targetButton.value;
 	}	
 	else if(keyType=="up"){
 		chosenPlayingKeys["up"].keyCode=chosenKey;
@@ -409,28 +479,16 @@ function findRandomEmptyCell(board) {
 }
 
 function GetKeyPressed() {
-	// if (keysDown[38]) {
-	// 	return 1;
-	// }
-	// if (keysDown[40]) {
-	// 	return 2;
-	// }
-	// if (keysDown[37]) {
-	// 	return 3;
-	// }
-	// if (keysDown[39]) {playingKeys
-	// 	return 4;
-	// }
-	if (keysDown[playingKeys["up"].keyCode]) {
+	if (keysDown[gameSettings.playingKeys["up"].keyCode]) {
 		return 1;
 	}
-	if (keysDown[playingKeys["down"].keyCode]) {
+	if (keysDown[gameSettings.playingKeys["down"].keyCode]) {
 		return 2;
 	}
-	if (keysDown[playingKeys["left"].keyCode]) {
+	if (keysDown[gameSettings.playingKeys["left"].keyCode]) {
 		return 3;
 	}
-	if (keysDown[playingKeys["right"].keyCode]) {
+	if (keysDown[gameSettings.playingKeys["right"].keyCode]) {
 		return 4;
 	}
 }
