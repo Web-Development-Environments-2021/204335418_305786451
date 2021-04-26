@@ -28,11 +28,16 @@ gameSettings = {
 	gameTime: 60,
 	monstersAmount: 1,
 };
+
 PlayingKeysSetup(gameSettings.playingKeys);
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
-var bombs=1;
+var bombsAmount = 3;
+var bombs;
+var shootSound;
+var explosionSound;
+var food;
 
 var ghostImages=[];
 var ghosts=[]; //
@@ -49,6 +54,7 @@ users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"
 $(document).ready(function() {
 	initListeners();
 	initImages();
+	initSounds();
 });
 
 function initImages(){
@@ -74,6 +80,11 @@ function initGhosts(){
 		);
 	}
 	repositionGhosts();
+}
+
+function initSounds(){
+	shootSound = new sound("sounds/laser.mp3");
+	explosionSound = new sound("sounds/explosion.mp3");
 }
 
 function repositionGhosts(){
@@ -145,17 +156,10 @@ function removeFromScreen(drawing){
 function moveGhosts(){
 	ghosts.forEach((ghost)=>{
 		if (ghost.show){
-			// var i = ghost.i;
-			// var j = ghost.j;
-			// var before = board[i][j];
-
 			var move= getBestMove(ghost);
-			// removeFromScreen(ghost);
 			ghost.i=move[0];
 			ghost.j=move[1];
-			// board
-			board[move[0]][move[1]]=3;
-
+			board[ghost.i][ghost.j]=3;
 		}
 	});
 }
@@ -207,6 +211,61 @@ function initListeners(){
 	initAboutModal();
 }
 
+function initBombListener(){
+	canvas.addEventListener("mousedown",throwBomb);
+}
+
+function throwBomb(mouse){
+	if (bombs==0)
+		return;
+	bombs--;
+	for (var i=0 ; i<ghosts.length; i++){
+		var startX=ghosts[i].i*60;
+		var endX=ghosts[i].i*60+60;
+		var startY=ghosts[i].j*60;
+		var endY=ghosts[i].j*60+60;
+
+		if (mouse.offsetX >= startX && mouse.offsetX <= endX &&
+			mouse.offsetY >= startY && mouse.offsetY <= endY)
+		{
+				// alert("hit ghost",ghost.image.src);
+				ghosts[i].show=false;
+				Explosion(mouse);
+				removeFromScreen(ghosts[i]);
+				activeGhosts--;
+				if (bombs==0)
+					canvas.removeEventListener("mousedown",throwBomb);
+				return;
+		}
+		else
+			PewPew();
+	}
+
+}
+
+function sound(src) {
+	this.sound = document.createElement("audio");
+	this.sound.src = src;
+	this.sound.setAttribute("preload", "auto");
+	this.sound.setAttribute("controls", "none");
+	this.sound.style.display = "none";
+	document.body.appendChild(this.sound);
+	this.play = function(){
+	  this.sound.play();
+	}
+	this.stop = function(){
+	  this.sound.pause();
+	}
+}
+
+function Explosion(event){
+	//PLAY AN EXPLOSION SOUND/ ANIMATION AT E.OFFSET
+	explosionSound.play();
+}
+
+function PewPew(){
+	shootSound.play();
+}
 function initButtons(){
 	$(".pageButton").click(function(e){
 		var id = e.target.getAttribute("page");
@@ -570,20 +629,21 @@ function ValidateLogin(form){
 }
 
 function Start() {
+	initBombListener();
 	ghosts=[];
 	context = canvas.getContext("2d");
 	board = new Array();
+	food = new Array();
 	score = 0;
+	bombs = bombsAmount;
 	pac_color = "yellow";
 	var cnt = 100;
 	var food_remain = 50;
 	var pacman_remain = 1;
-	var ghosts_remain = ghostsAmount;
-
 	start_time = new Date();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
-		board[0][0]=3;
+		food[i] = new Array();
 		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
 			if (
@@ -598,7 +658,7 @@ function Start() {
 				var randomNum = Math.random();
 				if (randomNum <= (1.0 * food_remain) / cnt) {
 					food_remain--;
-					board[i][j] = 1;
+					food[i][j] = 1;
 				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
 					pacman.i = i;
 					pacman.j = j;
@@ -613,7 +673,7 @@ function Start() {
 	}
 	while (food_remain > 0) {
 		var emptyCell = FindRandomEmptyCell(board);
-		board[emptyCell[0]][emptyCell[1]] = 1;
+		food[emptyCell[0]][emptyCell[1]] = 1;
 		food_remain--;
 	}
 	keysDown = {};
@@ -635,8 +695,7 @@ function Start() {
 
 	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
-		ghostsinterval = setInterval(moveGhosts, intervalLength+75);
-
+		ghostsinterval = setInterval(moveGhosts, intervalLength+100);
 	}
 
 
@@ -645,7 +704,7 @@ function Start() {
 function FindRandomEmptyCell(board) { //find places for pacman and food
 	var i = Math.floor(Math.random() * 9 + 1);
 	var j = Math.floor(Math.random() * 9 + 1);
-	while (board[i][j] != 0) {
+	while (board[i][j] != 0 && food[i][j]) {
 		i = Math.floor(Math.random() * 9 + 1);
 		j = Math.floor(Math.random() * 9 + 1);
 	}
@@ -680,7 +739,8 @@ function Draw() {
 				context.beginPath();
 				var eyePos= GetEyePosition(center.x,center.y);
 				var faceAngle= GetFaceAngle(center.x, center.y);
-				context.arc(center.x, center.y, 30, faceAngle * Math.PI, (faceAngle+1.75) * Math.PI);
+				var arc= openMouth? 1.75: 2;
+				context.arc(center.x, center.y, 30, faceAngle * Math.PI, (faceAngle+arc) * Math.PI);
 				context.lineTo(center.x, center.y);
 				context.fillStyle = pac_color; //color
 				context.fill();
@@ -688,7 +748,7 @@ function Draw() {
 				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
-			} else if (board[i][j] == 1) {
+			} else if (food[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
 				context.fillStyle = "black"; //color
@@ -701,10 +761,12 @@ function Draw() {
 			}
 		}
 	}
-	for(var i=0; i<activeGhosts; i++)
-		drawGhost(ghosts[i]);
+	for(var i=0; i<4; i++)
+		if(ghosts[i].show)
+			drawGhost(ghosts[i]);
 }
 
+var openMouth = true;
 function GetFaceAngle(x,y){
 	var startAngle = 0.15;
 	switch(direction){ //rotate face
@@ -763,9 +825,11 @@ function UpdatePosition() {
 			direction="right";
 		}
 	}
-	if (board[pacman.i][pacman.j] == 1) {
+	if (food[pacman.i][pacman.j] == 1) {
 		score++;
+		food[pacman.i][pacman.j]=0;
 	}
+	openMouth=!openMouth;
 	board[pacman.i][pacman.j] = 2;
 	updateCollisions();
 	// moveGhosts();
