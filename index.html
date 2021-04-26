@@ -31,8 +31,10 @@
 				<button class="pageButton" page=3>Sign Up</button>
 				<button class="pageButton" page=4>Login</button>
 			</div>
-			<div id="page2" hidden>
-				<div id="score">
+			<div class="game" id="page2" hidden>
+				<canvas id="canvas" height="600" width="600"></canvas>
+				<div id="stats">
+					<div id="score">
 				<label for="lblScore">SCORE:</label>
 				<input id="lblScore" type="text" />
 				</div>
@@ -40,7 +42,8 @@
 					<label for="lblTime">TIME:</label>
 					<input id="lblTime" type="text" />
 				</div>
-				<canvas id="canvas" height="600" width="600"></canvas>
+				</div>
+				
 			</div>
 			<div id="page3" hidden>
 				<h2>Sign up to enter the game!</h2>

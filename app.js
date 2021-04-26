@@ -9,7 +9,7 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-var intervalSet = false;
+var ghostsinterval;
 var loggedIn = true;
 var activePageId='#page1';
 var users=[];
@@ -31,6 +31,8 @@ gameSettings = {
 PlayingKeysSetup(gameSettings.playingKeys);
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+
+var bombs=1;
 
 var ghostImages=[];
 var ghosts=[]; //
@@ -75,7 +77,7 @@ function initGhosts(){
 }
 
 function repositionGhosts(){
-	//update starting positions to corners
+	//positions ghosts in corners
 	ghosts[0].i=0; 
 	ghosts[0].j=0;
 	ghosts[0].show = (activeGhosts>1);
@@ -99,9 +101,10 @@ function drawGhost(ghost){
 
 function updateCollisions(){
 	ghosts.forEach((ghost)=>{
-		if (ghost.i==pacman.i && ghost.j==pacman.j && ghost.show)
+		if (ghost.i==pacman.i && ghost.j==pacman.j && ghost.show){
 			getHit();
 			return;
+		}
 	});
 }
 
@@ -110,6 +113,7 @@ function getHit(){
 	lives--;
 	if (lives==0){
 		gameOver();
+		return;
 	}
 	repositionGhosts();
 	removeFromScreen(pacman);
@@ -528,33 +532,25 @@ function PlayingKeysSetup(keysArray){
 	// e.target.value=e.key;
 }
 function ShowScreen(pageId){
-	if (activePageId==2 && pageId!=2){
+	if(pageId==2)
+		restart();
+	if (activePageId=="#page2" && pageId!=2){
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
-
+		interval=undefined;
+		ghostsinterval=undefined
 	}
-	if(pageId==2)
+	if(pageId==2 && !loggedIn)
 	{
-		if (!loggedIn){
-			alert("You must be logged in to play the game!");
-			ShowScreen(4);
-			return;
-
-			// Start();
-			// return;
-		}
-		// else {
-		// 	alert("You must be logged in to play the game!");
-		// 	ShowScreen(4);
-		// 	return;
-		// }
+		alert("You must be logged in to play the game!");
+		ShowScreen(4);
+		return;
 	}
 	var id ="#page"+pageId;
 	$(activePageId).hide();
 	$(id).show();
 	activePageId=id;
-	if(pageId==2)
-		Start();
+	
 }
 
 function ValidateLogin(form){
@@ -572,7 +568,7 @@ function ValidateLogin(form){
 	}
 	return loginSuccess;
 }
-var ghostsinterval;
+
 function Start() {
 	ghosts=[];
 	context = canvas.getContext("2d");
@@ -646,7 +642,7 @@ function Start() {
 
 }
 
-function FindRandomEmptyCell(board) { //INSERT GHOSTS LOCATIONS
+function FindRandomEmptyCell(board) { //find places for pacman and food
 	var i = Math.floor(Math.random() * 9 + 1);
 	var j = Math.floor(Math.random() * 9 + 1);
 	while (board[i][j] != 0) {
