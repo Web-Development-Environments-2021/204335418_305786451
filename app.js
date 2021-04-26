@@ -17,7 +17,8 @@ var intervalLength=150;
 var activeUser="";
 // var playingKeys = [];
 // playingKeysSetup(playingKeys);
-var maxPoints=50;
+var maxPoints=100;
+var food_remain;
 var chosenPlayingKeys=[];
 PlayingKeysSetup(chosenPlayingKeys);
 var chosenKey=0;
@@ -33,8 +34,8 @@ PlayingKeysSetup(gameSettings.playingKeys);
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
-var bombsAmount = 3;
-var bombs;
+var ammoAmount = 3;
+var ammo;
 var shootSound;
 var explosionSound;
 var food;
@@ -47,6 +48,8 @@ var activeGhosts=ghostsAmount; //ghosts in game
 var direction="left";
 
 var lives = 5
+
+var movingFood={i:5,j:5,show:true,image:''};
 
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
@@ -66,6 +69,9 @@ function initImages(){
 	ghostImages[2].src= "images/green.png";
 	ghostImages[3] = new Image();
 	ghostImages[3].src= "images/yellow.png";
+	movingFood.image = new Image();
+	movingFood.image.src = "images/burger.png";
+
 }
 
 function initGhosts(){
@@ -84,7 +90,10 @@ function initGhosts(){
 
 function initSounds(){
 	shootSound = new sound("sounds/laser.mp3");
+	shootSound.sound.volume=0.1;
 	explosionSound = new sound("sounds/explosion.mp3");
+	explosionSound.sound.volume=0.2;
+
 }
 
 function repositionGhosts(){
@@ -106,17 +115,21 @@ function repositionGhosts(){
 	ghosts[3].show = (activeGhosts>3);
 }
 
-function drawGhost(ghost){
-	context.drawImage(ghost.image, ghost.i*60, ghost.j*60, 60, 60);
+function drawObject(object){
+	context.drawImage(object.image, object.i*60, object.j*60, 60, 60);
 }
 
 function updateCollisions(){
+	if (movingFood.i==pacman.i && movingFood.j==pacman.j && movingFood.show){
+		score+=50;
+		movingFood.show=false;
+	}
 	ghosts.forEach((ghost)=>{
 		if (ghost.i==pacman.i && ghost.j==pacman.j && ghost.show){
 			getHit();
 			return;
 		}
-	});
+	});	
 }
 
 function getHit(){
@@ -139,6 +152,7 @@ function gameOver(){
 function restart(){
 	lives=5;
 	score=0;
+	movingFood.show=true;
 	activeGhosts=ghostsAmount;
 	Start();
 }
@@ -203,6 +217,35 @@ function getBestMove(ghost){
 	return [tempi,tempj];
 
 }
+
+function moveFood(){
+	i=movingFood.i;
+	j=movingFood.j;
+	var rand = (Math.random()*4);
+	if (rand>=0 && rand<=1 && j > 0 && board[i][j - 1] != 4) {
+		movingFood.i = i;
+		movingFood.j = j-1;
+		return;
+	}
+	if (rand>1 && rand<=2 && j < 9 && board[i][j + 1] != 4) {
+		movingFood.i = i;
+		movingFood.j = j+1;
+		return;
+	}
+
+	if (rand>2 && rand<=3 && i > 0 && board[i - 1][j] != 4) {
+		movingFood.i = i-1;
+		movingFood.j = j;
+		return;
+	}
+
+	if (rand>3 && rand<=4 && i < 9 && board[i + 1][j] != 4) {
+		movingFood.i = i+1;
+		movingFood.j = j;
+		return;
+	}
+}
+
 function initListeners(){
 	initButtons();
 	initSignUpForm();
@@ -211,14 +254,14 @@ function initListeners(){
 	initAboutModal();
 }
 
-function initBombListener(){
-	canvas.addEventListener("mousedown",throwBomb);
+function initShootListener(){
+	canvas.addEventListener("mousedown",Shoot);
 }
 
-function throwBomb(mouse){
-	if (bombs==0)
+function Shoot(mouse){
+	if (ammo==0)
 		return;
-	bombs--;
+	ammo--;
 	for (var i=0 ; i<ghosts.length; i++){
 		var startX=ghosts[i].i*60;
 		var endX=ghosts[i].i*60+60;
@@ -233,8 +276,8 @@ function throwBomb(mouse){
 				Explosion(mouse);
 				removeFromScreen(ghosts[i]);
 				activeGhosts--;
-				if (bombs==0)
-					canvas.removeEventListener("mousedown",throwBomb);
+				if (ammo==0)
+					canvas.removeEventListener("mousedown",Shoot);
 				return;
 		}
 		else
@@ -599,6 +642,9 @@ function ShowScreen(pageId){
 		interval=undefined;
 		ghostsinterval=undefined
 	}
+	if (activePageId=="#page3" && pageId!=3){
+		document.getElementById("signUp").reset();
+	}
 	if(pageId==2 && !loggedIn)
 	{
 		alert("You must be logged in to play the game!");
@@ -629,16 +675,18 @@ function ValidateLogin(form){
 }
 
 function Start() {
-	initBombListener();
+	initShootListener();
 	ghosts=[];
 	context = canvas.getContext("2d");
 	board = new Array();
 	food = new Array();
 	score = 0;
-	bombs = bombsAmount;
+	ammo = ammoAmount;
 	pac_color = "yellow";
+	movingFood.i=5;
+	movingFood.j=5;
 	var cnt = 100;
-	var food_remain = 50;
+	food_remain = maxPoints-50;
 	var pacman_remain = 1;
 	start_time = new Date();
 	for (var i = 0; i < 10; i++) {
@@ -646,6 +694,8 @@ function Start() {
 		food[i] = new Array();
 		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
+			if (i==5 && j==5)
+				continue;	
 			if (
 				(i == 3 && j == 3) ||
 				(i == 3 && j == 4) ||
@@ -659,7 +709,7 @@ function Start() {
 				if (randomNum <= (1.0 * food_remain) / cnt) {
 					food_remain--;
 					food[i][j] = 1;
-				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
+				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt && i>1 && i<9 && j>1 && j<9) {
 					pacman.i = i;
 					pacman.j = j;
 					pacman_remain--;
@@ -676,6 +726,7 @@ function Start() {
 		food[emptyCell[0]][emptyCell[1]] = 1;
 		food_remain--;
 	}
+	food_remain=maxPoints-50;
 	keysDown = {};
 	addEventListener(
 		"keydown",
@@ -692,7 +743,7 @@ function Start() {
 		false
 	);
 	initGhosts();
-
+	
 	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
 		ghostsinterval = setInterval(moveGhosts, intervalLength+100);
@@ -730,12 +781,14 @@ function Draw() {
 	canvas.width = canvas.width; //clean board
 	lblScore.value = score;
 	lblTime.value = time_elapsed;
+	lblLives.value = lives;
+	lblAmmo.value = ammo;
 	for (var i = 0; i < 10; i++) {
 		for (var j = 0; j < 10; j++) {
 			var center = new Object();
 			center.x = i * 60 + 30;
 			center.y = j * 60 + 30;
-			if (board[i][j] == 2) {
+			if (board[i][j] == 2) { // draw pacman
 				context.beginPath();
 				var eyePos= GetEyePosition(center.x,center.y);
 				var faceAngle= GetFaceAngle(center.x, center.y);
@@ -748,10 +801,15 @@ function Draw() {
 				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
-			} else if (food[i][j] == 1) {
+			} else if (food[i][j] != 0) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				context.fillStyle = "black"; //color
+				if (food[i][j] == 1)
+					context.fillStyle = gameSettings.ballsSettings["A"].color;
+				if (food[i][j] == 2)
+					context.fillStyle = gameSettings.ballsSettings["B"].color;
+				if (food[i][j] == 3)
+					context.fillStyle = gameSettings.ballsSettings["C"].color;
 				context.fill();
 			} else if (board[i][j] == 4) {
 				context.beginPath();
@@ -763,7 +821,9 @@ function Draw() {
 	}
 	for(var i=0; i<4; i++)
 		if(ghosts[i].show)
-			drawGhost(ghosts[i]);
+			drawObject(ghosts[i]);
+	if (movingFood.show) 
+		drawObject(movingFood);
 }
 
 var openMouth = true;
@@ -828,21 +888,23 @@ function UpdatePosition() {
 	if (food[pacman.i][pacman.j] == 1) {
 		score++;
 		food[pacman.i][pacman.j]=0;
+		food_remain--;
 	}
 	openMouth=!openMouth;
 	board[pacman.i][pacman.j] = 2;
 	updateCollisions();
+	moveFood();
 	// moveGhosts();
 	var currentTime = new Date();
 	time_elapsed = (currentTime - start_time) / 1000;
 	if (score >= 20 && time_elapsed <= 10) {
 		pac_color = "green";
 	}
-	if (score == maxPoints) {
+	if (score == maxPoints && food_remain==0) {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
-		window.alert("Game completed");
+		window.alert("You won with maximum score! Well done!");
 	} else {
 		Draw();
 	}
