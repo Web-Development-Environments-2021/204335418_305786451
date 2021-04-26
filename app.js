@@ -519,6 +519,23 @@ function initSettings(){
 	$(".playingKeySettings").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
+	$("#randomSettings").click(function(e){
+		var form = document.getElementById("settings");
+		form.up.value="ArrowUp";
+		form.down.value="ArrowDown";
+		form.left.value="ArrowLeft";
+		form.right.value="ArrowRight";
+		PlayingKeysSetup(chosenPlayingKeys);
+		form.ballsAmount.value=Math.floor(Math.floor(Math.random() * 40))+50;
+		form.gameTime.value=Math.floor(Math.floor(Math.random() * 9))+1;
+		form.monstersAmount.selectedIndex=Math.floor(Math.floor(Math.random() * 3))+1;
+		form.colorA.value="#"+Math.floor(Math.random()*16777215).toString(16);
+		form.pointsA.value=Math.floor(Math.floor(Math.random() * 9))+5;
+		form.colorB.value="#"+Math.floor(Math.random()*16777215).toString(16);
+		form.pointsB.value=Math.floor(Math.floor(Math.random() * 14))+10;
+		form.colorC.value="#"+Math.floor(Math.random()*16777215).toString(16);
+		form.pointsC.value=Math.floor(Math.floor(Math.random() * 19))+15;
+	});
 	// $(".ballColor").blur(function(e){
 	// 	gameSettings.ballsSetting[e.id[-1]].color=e.value;
 	// });
