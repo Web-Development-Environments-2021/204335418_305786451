@@ -558,6 +558,7 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].potints=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.selectedIndex;
 	alert("New game settings!!!")
+	ShowScreen("2");
 }
 function chooseKey(e){
 	chosenKey=e.keyCode;
@@ -621,7 +622,6 @@ function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["down"].keyName=copyFrom["down"].keyName;
 }
 function resetSettingForm(){
-	alert("reset settings");
 	var form = document.getElementById("settings");
 	form.up.value=gameSettings.playingKeys["up"].keyName;
 	form.down.value=gameSettings.playingKeys["down"].keyName;
