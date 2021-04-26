@@ -18,7 +18,7 @@
 	<body>
 		<div id="navbar">
 			<button class="pageButton" page=1>Welcome</button>
-			<button class="pageButton" page=2>Play Now</button>
+			<button class="pageButton 2" page=2>Play Now</button>
 			<button class="pageButton" page=3>Sign Up</button>
 			<button class="pageButton" page=4>Login</button>
 			<button class="pageButton" page=5>Settings</button>
@@ -35,19 +35,29 @@
 				<canvas id="canvas" height="600" width="600"></canvas>
 				<div id="stats">
 					<div id="score">
-				<label for="lblScore">SCORE:</label>
+				<label for="lblScore">Score:</label>
 				<input id="lblScore" type="text" />
 				</div>
 				<div id="time">
-					<label for="lblTime">TIME:</label>
+					<label for="lblTime">Time:</label>
 					<input id="lblTime" type="text" />
 				</div>
+				<div id="lives">
+					<label for="lblLives">Lives:</label>
+					<input id="lblLives" type="text" />
 				</div>
+				</div>
+				<div id="ammo">
+					<label for="lblAmmo">Ammo:</label>
+					<input id="lblAmmo" type="text" />
+				</div>
+				</div>
+				
 				
 			</div>
 			<div id="page3" hidden>
 				<h2>Sign up to enter the game!</h2>
-				<form classs="cmxform" id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">
+				<form class="cmxform" id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">
 					<fieldset>
 						<br><br>
 						<br/>Username<br>
@@ -134,6 +144,11 @@
 					<h3>Pacman game</h3>
 					<p>Developed by: Eilam Gal and Oded Berkovich</p><br>
 					<p>Used jQuery Validation Plugin to validate all forms.</p>
+				  </div>
+			</div>
+			<div id="start" class="modal" >
+				<div class="modal-content">
+					<h3>Press any key to start playing!</h3>
 				  </div>
 			</div>		
 		</div>
