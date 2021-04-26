@@ -7,17 +7,17 @@ var board;
 var score;
 var pac_color;
 var start_time;
-var time_elapsed;
+var time_remaining;
 var interval;
 var ghostsinterval;
 var loggedIn = true;
 var activePageId='#page1';
 var users=[];
-var intervalLength=150;
+var intervalLength=100;
 var activeUser="";
 // var playingKeys = [];
 // playingKeysSetup(playingKeys);
-var maxPoints=100;
+var maxPoints;
 var food_remain;
 var chosenPlayingKeys=[];
 PlayingKeysSetup(chosenPlayingKeys);
@@ -26,7 +26,7 @@ gameSettings = {
 	playingKeys: [],
 	ballsAmount: 50,
 	ballsSetting: [],
-	gameTime: 60,
+	gameTime: 1,
 	monstersAmount: 1,
 };
 
@@ -46,7 +46,7 @@ var food;
 var ghostImages=[];
 var ghosts=[]; //
 var ghostsAmount=3; //user's settings
-var activeGhosts=ghostsAmount; //ghosts in game
+var activeGhosts=gameSettings.monstersAmount; //ghosts in game
 
 var direction="left";
 
@@ -138,19 +138,11 @@ function updateCollisions(){
 function getHit(){
 	score-=10;
 	lives--;
-	if (lives==0){
-		gameOver();
-		return;
-	}
 	repositionGhosts();
 	removeFromScreen(pacman);
 	repositionPacman();
 }
 
-function gameOver(){
-	alert("You Lost!");
-	restart();
-}
 
 function restart(){
 	lives=5;
@@ -663,8 +655,7 @@ function PlayingKeysSetup(keysArray){
 	// e.target.value=e.key;
 }
 function ShowScreen(pageId){
-	if(pageId==2)
-		restart();
+	// 
 	if (activePageId=="#page5" && pageId!=5){
 		resetSettingForm();
 	}
@@ -687,7 +678,8 @@ function ShowScreen(pageId){
 	$(activePageId).hide();
 	$(id).show();
 	activePageId=id;
-	
+	if(pageId==2)
+		restart();
 }
 
 function ValidateLogin(form){
@@ -715,12 +707,12 @@ function Start() {
 	score = 0;
 	ammo = ammoAmount;
 	pac_color = "yellow";
+	maxPoints=gameSettings.ballsAmount+50;
 	movingFood.i=5;
 	movingFood.j=5;
 	var cnt = 100;
-	food_remain = maxPoints-50;
+	food_remain = gameSettings.ballsAmount;
 	var pacman_remain = 1;
-	start_time = new Date();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
 		food[i] = new Array();
@@ -775,7 +767,9 @@ function Start() {
 		false
 	);
 	initGhosts();
-	
+	window.alert("Press ok to start playing!");
+	start_time = new Date();
+
 	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
 		ghostsinterval = setInterval(moveGhosts, intervalLength+100);
@@ -787,7 +781,7 @@ function Start() {
 function FindRandomEmptyCell(board) { //find places for pacman and food
 	var i = Math.floor(Math.random() * 9 + 1);
 	var j = Math.floor(Math.random() * 9 + 1);
-	while (board[i][j] != 0 && food[i][j]) {
+	while (board[i][j] != 0 && food[i][j] != 0) {
 		i = Math.floor(Math.random() * 9 + 1);
 		j = Math.floor(Math.random() * 9 + 1);
 	}
@@ -812,7 +806,7 @@ function GetKeyPressed() {
 function Draw() {
 	canvas.width = canvas.width; //clean board
 	lblScore.value = score;
-	lblTime.value = time_elapsed;
+	lblTime.value = time_remaining;
 	lblLives.value = lives;
 	lblAmmo.value = ammo;
 	for (var i = 0; i < 10; i++) {
@@ -927,20 +921,45 @@ function UpdatePosition() {
 	}
 	openMouth=!openMouth;
 	board[pacman.i][pacman.j] = 2;
-	updateCollisions();
 	moveFood();
+	updateCollisions();
+	if (lives==0){
+		alert("Loser!");
+		restart();
+	}
 	// moveGhosts();
 	var currentTime = new Date();
-	time_elapsed = (currentTime - start_time) / 1000;
-	if (score >= 20 && time_elapsed <= 10) {
+	time_remaining = (gameSettings.gameTime*60)-(currentTime - start_time) / 1000;
+	if (score >= 20 && time_remaining >= 50) {
 		pac_color = "green";
 	}
-	if (score == maxPoints && food_remain==0) {
+	if (time_remaining<=0){
+		window.clearInterval(interval);
+		window.clearInterval(ghostsinterval);
+		interval=undefined;
+		if (score<100){
+			window.alert("You are better than",score,"points!");
+			restart();
+		}
+		else {
+			window.alert("Winner!");
+			restart();
+		}
+	}
+	
+	if (score == maxPoints) {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
 		window.alert("You won with maximum score! Well done!");
-	} else {
+		restart();
+	} else if (food_remain==0){
+		window.clearInterval(interval);
+		window.clearInterval(ghostsinterval);
+		interval=undefined;
+		window.alert("No more food! Nice job!");
+		restart();
+ 	} else {
 		Draw();
 	}
 }
