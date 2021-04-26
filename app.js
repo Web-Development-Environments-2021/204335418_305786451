@@ -24,14 +24,16 @@ var chosenKey=0;
 gameSettings = {
 	playingKeys: [],
 	ballsAmount: 50,
-	ballsSettings: [],
+	ballsSetting: [],
 	gameTime: 60,
 	monstersAmount: 1,
 };
 PlayingKeysSetup(gameSettings.playingKeys);
+gameSettings.ballsSetting["A"]={color:"#ff0000", potints:5};
+gameSettings.ballsSetting["B"]={color:"#00fa3e", potints:10};
+gameSettings.ballsSetting["C"]={color:"#000000", potints:15};
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
-
 var bombs=1;
 
 var ghostImages=[];
@@ -312,118 +314,138 @@ function initSettings(){
 	$("#settings").validate(
 		{
 			rules: {
-				playingKeys: {
+				upKey: {
 					required: true,
-					checkChoosenKeys: true,
+					checkUpKey: true,
+				},
+				downKey: {
+					required: true,
+					checkDownKey: true,
+				},
+				leftKey: {
+					required: true,
+					checkLeftKey: true,
+				},
+				rightKey: {
+					required: true,
+					checkRightKey: true,
 				},
 				ballsAmount: {
 					required:true,
 					checkBallsAmount: true,
 				},
-				ballColor:{
-					required:true,
+				ballA:{
+					required: true,
+					checkBallPoints: true,
+					pattern: "^[0-9]*$",
 				},
-				gameTime: {
-					required:true,
-					checkGameTime: true,
+				ballB:{
+					required: true,
+					checkBallPoints: true,
+					pattern: "^[0-9]*$",
+				},
+				ballC:{
+					required: true,
+					checkBallPoints: true,
+					pattern: "^[0-9]*$",
 				},
 
 			},
 			messages : {
-				playingKeys:{
-					checkChoosenKeys:"You have chosen the same key twice. Please try again"
+				upKey:{
+					checkUpKey:"You have chosen this key all ready. Please try again"
+				},
+				downKey:{
+					checkDownKey:"You have chosen this key all ready. Please try again"
+				},
+				leftKey:{
+					checkLeftKey:"You have chosen this key all ready. Please try again"
+				},
+				rightKey:{
+					checkRightKey:"You have chosen this key all ready. Please try again"
 				},
 				ballsAmount:{
-					pattern:"No digits allowed"
+					checkBallsAmount:"The balls amount need to be between 60 to 90 balls."
+				},
+				ballA:{
+					checkBallsPoints:"Positive score only",
+					pattern:"Digits only",
+				},
+				ballB:{
+					checkBallsPoints:"Positive score only",
+					pattern:"Digits only",
+				},
+				ballC:{
+					checkBallsPoints:"Positive score only",
+					pattern:"Digits only",
 				},
 				ballColor:{
 					checkPassword:"Please enter at least one character and one digit"
 				},
 				gameTime:{
-					checkGameTime:"The minimum time for a game is 60 secondes"
+					checkGameTime:"The minimum time for a game is 1 minute",
 				}
 			}
 			
 		});
 	$.validator.addMethod("checkBallsAmount", function (value) {
-		return value>=60 && value<=90; 
+		return value>=50 && value<=90; 
 	});
-	$.validator.addMethod("checkChoosenKeys", function (value) {
-		return validateChoosenKeys(); 
+	$.validator.addMethod("checkUpKey", function (value) {
+		return validateChoosenKeys(value,"up"); 
+	});
+	$.validator.addMethod("checkDownKey", function (value) {
+		return validateChoosenKeys(value,"down"); 
+	});
+	$.validator.addMethod("checkLeftKey", function (value) {
+		return validateChoosenKeys(value,"left"); 
+	});
+	$.validator.addMethod("checkRightKey", function (value) {
+		return validateChoosenKeys(value,"right"); 
 	});
 	$.validator.addMethod("checkGameTime", function (value) {
-		return value>=60; 
+		return value>=1 && value<=10; 
 	});
-
-
-	// $("#settings").submit(function(e){
-	// 	e.preventDefault();
-		
-	// 	if(validateChoosenKeys()){
-	// 		copyPlayingKeysDicts(chosenPlayingKeys, playingKeys);
-	// 	}
-	// 	else{
-	// 		copyPlayingKeysDicts(playingKeys, chosenPlayingKeys);
-
-	// 		alert("You have chosen the same key twice. Please try again");
-	// 	}
-	// 	resetSetPlayingKeysForm();
-	// 	// var tmp = document.getElementById("#upKey").value;
-	// 	// alert(""+tmp);
-	// 	e.target.reset();
-	// 	showScreen(5);
-	// });
-	//playingKeySettings
+	$.validator.addMethod("checkBallPoints", function (value) {
+		return value>=0; 
+	});
 	$(".playingKeySettings").blur(function(e){
-		insertChosenKey(e.target,e.target.name);
+		InsertChosenKey(e.target,e.target.id);
 		document.removeEventListener('keydown',chooseKey);
 	});
 	$(".playingKeySettings").focus(function(e){
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	// $("#upKey").blur(function(e){
-	// 	insertChosenKey(e.target,"up");
-	// 	document.removeEventListener('keydown',chooseKey);
+	// $(".ballColor").blur(function(e){
+	// 	gameSettings.ballsSetting[e.id[-1]].color=e.value;
 	// });
-	// $("#upKey").focus(function(e){
-	// 	document.addEventListener('keydown' ,chooseKey);
+	// $(".ballPoints").blur(function(e){
+	// 	gameSettings.ballsSetting[e.id[-1]].color=e.value;
 	// });
-	// $("#downKey").blur(function(e){
-	// 	insertChosenKey(e.target,"down");
-	// 	document.removeEventListener('keydown',chooseKey);
-	// });
-	// $("#downKey").focus(function(e){
-	// 	document.addEventListener('keydown' ,chooseKey);
-	// });
-	// $("#leftKey").blur(function(e){
-	// 	insertChosenKey(e.target,"left");
-	// 	document.removeEventListener('keydown',chooseKey);
-	// });
-	// $("#leftKey").focus(function(e){
-	// 	document.addEventListener('keydown' ,chooseKey);
-	// });
-	// $("#rightKey").blur(function(e){
-	// 	insertChosenKey(e.target,"right");
-	// 	document.removeEventListener('keydown',chooseKey);
-	// });
-	// $("#rightKey").focus(function(e){
+	// $(".ballColor").focus(function(e){
 	// 	document.addEventListener('keydown' ,chooseKey);
 	// });
 }
 
-
-// function initPages() {
-// 	for (var i = 2; i <= 6; i++) {
-// 		var id = "#page" + i;
-// 		$(id).hide();
-// 	}
-// }
-
 function setSettings(){
-	var form = document.getElementById("#settings");
-	copyPlayingKeysDicts(chosenPlayingKeys, gameSettings.playingKeys);
-	gameSettings.ballsAmount = form.ballsAmount;
-	gameSettings.gameTime = form.gameTime;
+	var form = document.getElementById("settings");
+	CopyPlayingKeysDicts(chosenPlayingKeys, gameSettings.playingKeys);
+	// gameSettings.ballsSetting
+	gameSettings.ballsAmount = form.ballsAmount.value;
+	gameSettings.gameTime = form.gameTime.value;
+	gameSettings.ballsSetting["A"].color=form.colorA.value;
+	gameSettings.ballsSetting["A"].potints=form.pointsA.value;
+	gameSettings.ballsSetting["B"].color=form.colorB.value;
+	gameSettings.ballsSetting["B"].potints=form.pointsB.value;
+	gameSettings.ballsSetting["C"].color=form.colorC.value;
+	gameSettings.ballsSetting["C"].potints=form.pointsC.value;
+	gameSettings.monstersAmount=form.monstersAmount.selectedIndex;
+	// gameSettings.ballsSetting["A"].color=form.colorA.value;
+	// gameSettings.ballsSetting["A"].color=pointsA.value;
+	// gameSettings.ballsSetting["B"].color=form.colorB.value;
+	// gameSettings.ballsSetting["B"].color=pointsB.value;
+	// gameSettings.ballsSetting["C"].color=form.colorC.value;
+	// gameSettings.ballsSetting["C"].color=pointsC.value;
 	// gameTime: 60,
 	// monstersAmount: 1,
 
@@ -438,14 +460,20 @@ function chooseKey(e){
 	else
 		e.target.value=e.key;
 }
-function validateChoosenKeys(){
-	for(var key1 in chosenPlayingKeys){
-		for(var key2 in chosenPlayingKeys){
-			if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
-				return false;
-			}
-		}
+function validateChoosenKeys(value, keyType){
+	
+	for(var key in chosenPlayingKeys){
+		if(keyType!=key && value==chosenPlayingKeys[key].keyName){
+			return false;
+		}	
 	}
+	// for(var key1 in chosenPlayingKeys){
+	// 	for(var key2 in chosenPlayingKeys){
+	// 		if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
+	// 			return false;
+	// 		}
+	// 	}
+	// }
 	return true;
 }
 function InsertChosenKey(targetButton, keyType){
@@ -465,41 +493,6 @@ function InsertChosenKey(targetButton, keyType){
 		chosenPlayingKeys["down"].keyCode=chosenKey;
 		chosenPlayingKeys["down"].keyName=targetButton.value;
 	}
-
-	// if(chosenKey==playingKeys["left"].keyCode && key!="left"){
-	// 	targetButton.value=leftKeyName;
-	// 	alert("This key is already used.");
-	// } 
-	// else if(chosenKey==playingKeys["right"].keyCode && key!="right"){
-	// 	targetButton.value=rightKeyName;
-	// 	alert("This key is already used.");
-	// }
-	// else if(chosenKey==playingKeys["up"].keyCode && key!="up"){
-	// 	targetButton.value=upKeyName;
-	// 	alert("This key is already used.");
-	// } 
-	// else if(chosenKey==playingKeys["down"].keyCode && key!="down"){
-	// 	targetButton.value=downKeyName;
-	// 	alert("This key is already used.");
-	// }
-	// else{
-	// 	if(key=="left"){
-	// 		playingKeys["left"].keyCode=choosenKey;
-	// 		playingKeys["left"].keyName=targetButton.value;
-	// 	}
-	// 	else if(key=="right"){
-	// 		playingKeys["right"].keyCode=choosenKey;
-	// 		playingKeys["right"].keyName=targetButton.vale;
-	// 	}	
-	// 	else if(key=="up"){
-	// 		playingKeys["up"].keyCode=choosenKey;
-	// 		playingKeys["up"].keyName=targetButton.value;
-	// 	}
-	// 	else{
-	// 		playingKeys["down"].keyCode=choosenKey;
-	// 		playingKeys["down"].keyName=targetButton.value;
-	// 	}
-	// }
 }
 function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["left"].keyCode=copyFrom["left"].keyCode;
@@ -510,6 +503,24 @@ function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["up"].keyName=copyFrom["up"].keyName;
 	copyTo["down"].keyCode=copyFrom["down"].keyCode;
 	copyTo["down"].keyName=copyFrom["down"].keyName;
+}
+function resetSettingForm(){
+	alert("reset settings");
+	var form = document.getElementById("settings");
+	form.up.value=gameSettings.playingKeys["up"].keyName;
+	form.down.value=gameSettings.playingKeys["down"].keyName;
+	form.left.value=gameSettings.playingKeys["left"].keyName;
+	form.right.value=gameSettings.playingKeys["right"].keyName;
+	form.ballsAmount.value=gameSettings.ballsAmount;
+	form.gameTime.value=gameSettings.gameTime;
+	form.monstersAmount.selectedIndex=gameSettings.monstersAmount;
+	form.colorA.value=gameSettings.ballsSetting["A"].color;
+	form.pointsA.value=gameSettings.ballsSetting["A"].potints;
+	form.colorB.value=gameSettings.ballsSetting["B"].color;
+	form.pointsB.value=gameSettings.ballsSetting["B"].potints;
+	form.colorC.value=gameSettings.ballsSetting["C"].color;
+	form.pointsC.value=gameSettings.ballsSetting["C"].potints;
+	
 }
 function ResetSetPlayingKeysForm(){
 	// var tmp = document.getElementById("#upKey").value;
@@ -534,6 +545,9 @@ function PlayingKeysSetup(keysArray){
 function ShowScreen(pageId){
 	if(pageId==2)
 		restart();
+	if (activePageId=="#page5" && pageId!=5){
+		resetSettingForm();
+	}
 	if (activePageId=="#page2" && pageId!=2){
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
