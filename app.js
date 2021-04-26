@@ -828,7 +828,6 @@ function Draw() {
 
 				if (food[i][j] == 1)
 					context.fillStyle = gameSettings.ballsSetting["A"].color;
-
 				// if (food[i][j] == 2)
 				// 	context.fillStyle = gameSettings.ballsSetting["B"].color;
 				// if (food[i][j] == 3)
@@ -922,7 +921,6 @@ function UpdatePosition() {
 		alert("Loser!");
 		restart();
 	}
-	// moveGhosts();
 	var currentTime = new Date();
 	time_remaining = (gameSettings.gameTime*60)-(currentTime - start_time) / 1000;
 	if (score >= 20 && time_remaining >= 50) {
