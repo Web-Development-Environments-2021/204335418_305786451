@@ -702,7 +702,7 @@ function Start() {
 	score = 0;
 	ammo = ammoAmount;
 	pac_color = "yellow";
-	maxPoints=gameSettings.ballsAmount+50;
+	maxPoints= 50 + parseInt(gameSettings.ballsAmount);
 	movingFood.i=5;
 	movingFood.j=5;
 	var cnt = 100;
@@ -825,14 +825,14 @@ function Draw() {
 			} else if (food[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				context.fillStyle = "black";
 
-				// if (food[i][j] == 1)
-				// 	context.fillStyle = gameSettings.ballsSettings["A"].color;
+				if (food[i][j] == 1)
+					context.fillStyle = gameSettings.ballsSetting["A"].color;
+
 				// if (food[i][j] == 2)
-				// 	context.fillStyle = gameSettings.ballsSettings["B"].color;
+				// 	context.fillStyle = gameSettings.ballsSetting["B"].color;
 				// if (food[i][j] == 3)
-				// 	context.fillStyle = gameSettings.ballsSettings["C"].color;
+				// 	context.fillStyle = gameSettings.ballsSetting["C"].color;
 
 				context.fill();
 			} else if (board[i][j] == 4) {
