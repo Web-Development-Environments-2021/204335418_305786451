@@ -32,29 +32,30 @@
 				<button class="pageButton" page=4>Login</button>
 			</div>
 			<div class="game" id="page2" hidden>
-				<canvas id="canvas" height="600" width="600"></canvas>
-				<div id="stats">
+				<div class="stats">
 					<div id="score">
-				<label for="lblScore">Score:</label>
-				<input id="lblScore" type="text" />
+					<label for="lblScore">Score:</label>
+					<input id="lblScore" type="text" />
+					</div>
+					<div id="lives">
+						<label for="lblLives">Lives:</label>
+						<input id="lblLives" type="text" />
+					</div>
 				</div>
-				<div id="time">
-					<label for="lblTime">Time:</label>
-					<input id="lblTime" type="text" />
+				<canvas id="canvas" height="600" width="600"></canvas>
+				<div class="stats">
+					<div id="time">
+						<label for="lblTime">Time:</label>
+						<input id="lblTime" type="text" />
+					</div>
+					&nbsp
+					<div id="ammo">
+						<label for="lblAmmo">Ammo:</label>
+						<input id="lblAmmo" type="text" />
+					</div>
 				</div>
-				<div id="lives">
-					<label for="lblLives">Lives:</label>
-					<input id="lblLives" type="text" />
-				</div>
-				</div>
-				<div id="ammo">
-					<label for="lblAmmo">Ammo:</label>
-					<input id="lblAmmo" type="text" />
-				</div>
-				</div>
-				
-				
 			</div>
+				
 			<div id="page3" hidden>
 				<h2>Sign up to enter the game!</h2>
 				<form class="cmxform" id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">

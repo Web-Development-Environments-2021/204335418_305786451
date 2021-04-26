@@ -801,15 +801,18 @@ function Draw() {
 				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
-			} else if (food[i][j] != 0) {
+			} else if (food[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				if (food[i][j] == 1)
-					context.fillStyle = gameSettings.ballsSettings["A"].color;
-				if (food[i][j] == 2)
-					context.fillStyle = gameSettings.ballsSettings["B"].color;
-				if (food[i][j] == 3)
-					context.fillStyle = gameSettings.ballsSettings["C"].color;
+				context.fillStyle = "black";
+
+				// if (food[i][j] == 1)
+				// 	context.fillStyle = gameSettings.ballsSettings["A"].color;
+				// if (food[i][j] == 2)
+				// 	context.fillStyle = gameSettings.ballsSettings["B"].color;
+				// if (food[i][j] == 3)
+				// 	context.fillStyle = gameSettings.ballsSettings["C"].color;
+
 				context.fill();
 			} else if (board[i][j] == 4) {
 				context.beginPath();
