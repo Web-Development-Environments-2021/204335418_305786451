@@ -474,9 +474,9 @@ function initSettings(){
 					checkBallsPoints:"Positive score only",
 					pattern:"Digits only",
 				},
-				ballColor:{
-					checkPassword:"Please enter at least one character and one digit"
-				},
+				// ballColor:{
+				// 	checkPassword:"Please enter at least one character and one digit"
+				// },
 				gameTime:{
 					checkGameTime:"The minimum time for a game is 1 minute",
 				}
@@ -504,6 +504,7 @@ function initSettings(){
 	$.validator.addMethod("checkBallPoints", function (value) {
 		return value>=0; 
 	});
+	
 	$(".playingKeySettings").blur(function(e){
 		InsertChosenKey(e.target,e.target.id);
 		document.removeEventListener('keydown',chooseKey);
@@ -518,8 +519,12 @@ function initSettings(){
 		form.left.value="ArrowLeft";
 		form.right.value="ArrowRight";
 		PlayingKeysSetup(chosenPlayingKeys);
-		form.ballsAmount.value=Math.floor(Math.floor(Math.random() * 40))+50;
-		form.gameTime.value=Math.floor(Math.floor(Math.random() * 9))+1;
+		var randomBallsAmount = Math.floor(Math.floor(Math.random() * 40))+50;
+		form.ballsAmount.value=randomBallsAmount;
+		form.ballsAmountOutput.value=randomBallsAmount;
+		var randomGameTime=Math.floor(Math.floor(Math.random() * 9))+1;
+		form.gameTime.value=randomGameTime;
+		form.gameTimeOutput.value= randomGameTime;
 		form.monstersAmount.selectedIndex=Math.floor(Math.floor(Math.random() * 3))+1;
 		form.colorA.value="#"+Math.floor(Math.random()*16777215).toString(16);
 		form.pointsA.value=Math.floor(Math.floor(Math.random() * 9))+5;
@@ -527,22 +532,14 @@ function initSettings(){
 		form.pointsB.value=Math.floor(Math.floor(Math.random() * 14))+10;
 		form.colorC.value="#"+Math.floor(Math.random()*16777215).toString(16);
 		form.pointsC.value=Math.floor(Math.floor(Math.random() * 19))+15;
+		var validator = $( "#settings" ).validate();
+		validator.resetForm();
 	});
-	// $(".ballColor").blur(function(e){
-	// 	gameSettings.ballsSetting[e.id[-1]].color=e.value;
-	// });
-	// $(".ballPoints").blur(function(e){
-	// 	gameSettings.ballsSetting[e.id[-1]].color=e.value;
-	// });
-	// $(".ballColor").focus(function(e){
-	// 	document.addEventListener('keydown' ,chooseKey);
-	// });
 }
 
 function setSettings(){
 	var form = document.getElementById("settings");
 	CopyPlayingKeysDicts(chosenPlayingKeys, gameSettings.playingKeys);
-	// gameSettings.ballsSetting
 	gameSettings.ballsAmount = form.ballsAmount.value;
 	gameSettings.gameTime = form.gameTime.value;
 	gameSettings.ballsSetting["A"].color=form.colorA.value;
@@ -552,15 +549,8 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
 	gameSettings.ballsSetting["C"].potints=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.selectedIndex;
-	// gameSettings.ballsSetting["A"].color=form.colorA.value;
-	// gameSettings.ballsSetting["A"].color=pointsA.value;
-	// gameSettings.ballsSetting["B"].color=form.colorB.value;
-	// gameSettings.ballsSetting["B"].color=pointsB.value;
-	// gameSettings.ballsSetting["C"].color=form.colorC.value;
-	// gameSettings.ballsSetting["C"].color=pointsC.value;
-	// gameTime: 60,
-	// monstersAmount: 1,
-
+	alert("New game settings!!!")
+	ShowScreen("2");
 }
 function chooseKey(e){
 	chosenKey=e.keyCode;
@@ -579,13 +569,16 @@ function validateChoosenKeys(value, keyType){
 			return false;
 		}	
 	}
-	// for(var key1 in chosenPlayingKeys){
-	// 	for(var key2 in chosenPlayingKeys){
-	// 		if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
-	// 			return false;
-	// 		}
-	// 	}
-	// }
+	return true;
+}
+function absulotValdateKeys(){
+	for(var key1 in chosenPlayingKeys){
+		for(var key2 in chosenPlayingKeys){
+			if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
+				return false;
+			}
+		}
+	}
 	return true;
 }
 function InsertChosenKey(targetButton, keyType){
@@ -605,6 +598,10 @@ function InsertChosenKey(targetButton, keyType){
 		chosenPlayingKeys["down"].keyCode=chosenKey;
 		chosenPlayingKeys["down"].keyName=targetButton.value;
 	}
+	if(absulotValdateKeys()){
+		var validator = $( "#settings" ).validate();
+		validator.resetForm();
+	}
 }
 function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["left"].keyCode=copyFrom["left"].keyCode;
@@ -617,7 +614,6 @@ function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["down"].keyName=copyFrom["down"].keyName;
 }
 function resetSettingForm(){
-	// alert("reset settings");
 	var form = document.getElementById("settings");
 	form.up.value=gameSettings.playingKeys["up"].keyName;
 	form.down.value=gameSettings.playingKeys["down"].keyName;
@@ -632,7 +628,6 @@ function resetSettingForm(){
 	form.pointsB.value=gameSettings.ballsSetting["B"].potints;
 	form.colorC.value=gameSettings.ballsSetting["C"].color;
 	form.pointsC.value=gameSettings.ballsSetting["C"].potints;
-	
 }
 function ResetSetPlayingKeysForm(){
 	// var tmp = document.getElementById("#upKey").value;
@@ -830,10 +825,10 @@ function Draw() {
 			} else if (food[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				// context.fillStyle = "black";
+				context.fillStyle = "black";
 
-				if (food[i][j] == 1)
-					context.fillStyle = gameSettings.ballsSetting["A"].color;
+				// if (food[i][j] == 1)
+				// 	context.fillStyle = gameSettings.ballsSettings["A"].color;
 				// if (food[i][j] == 2)
 				// 	context.fillStyle = gameSettings.ballsSettings["B"].color;
 				// if (food[i][j] == 3)
