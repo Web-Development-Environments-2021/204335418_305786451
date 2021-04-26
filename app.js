@@ -608,7 +608,7 @@ function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["down"].keyName=copyFrom["down"].keyName;
 }
 function resetSettingForm(){
-	alert("reset settings");
+	// alert("reset settings");
 	var form = document.getElementById("settings");
 	form.up.value=gameSettings.playingKeys["up"].keyName;
 	form.down.value=gameSettings.playingKeys["down"].keyName;
@@ -819,10 +819,10 @@ function Draw() {
 			} else if (food[i][j] == 1) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				context.fillStyle = "black";
+				// context.fillStyle = "black";
 
-				// if (food[i][j] == 1)
-				// 	context.fillStyle = gameSettings.ballsSettings["A"].color;
+				if (food[i][j] == 1)
+					context.fillStyle = gameSettings.ballsSetting["A"].color;
 				// if (food[i][j] == 2)
 				// 	context.fillStyle = gameSettings.ballsSettings["B"].color;
 				// if (food[i][j] == 3)

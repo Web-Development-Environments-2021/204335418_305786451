@@ -32,26 +32,31 @@
 				<button class="pageButton" page=4>Login</button>
 			</div>
 			<div class="game" id="page2" hidden>
-				<div class="stats">
-					<div id="score">
-					<label for="lblScore">Score:</label>
-					<input id="lblScore" type="text" />
-					</div>
-					<div id="lives">
-						<label for="lblLives">Lives:</label>
-						<input id="lblLives" type="text" />
+				<div class="statsContainer">
+					<div class="stats">
+						<div class="stat" id="score">
+						<label for="lblScore">Score:</label>
+						<input id="lblScore" type="text" />
+						</div>
+						<div class="stat"  id="lives">
+							<label for="lblLives">Lives:</label>
+							<input id="lblLives" type="text" />
+						</div>
 					</div>
 				</div>
-				<canvas id="canvas" height="600" width="600"></canvas>
-				<div class="stats">
-					<div id="time">
-						<label for="lblTime">Time:</label>
-						<input id="lblTime" type="text" />
-					</div>
-					&nbsp
-					<div id="ammo">
-						<label for="lblAmmo">Ammo:</label>
-						<input id="lblAmmo" type="text" />
+				<br>
+				<canvas id="canvas" height="600" width="800"></canvas>
+				<br>
+				<div class="statsContainer">
+					<div class="stats">
+						<div class="stat" id="time">
+							<label for="lblTime">Time:</label>
+							<input id="lblTime" type="text" />
+						</div>
+						<div class="stat" id="ammo">
+							<label for="lblAmmo">Ammo:</label>
+							<input id="lblAmmo" type="text" />
+						</div>
 					</div>
 				</div>
 			</div>
