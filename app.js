@@ -464,16 +464,20 @@ function initSettings(){
 				ballA:{
 					required: true,
 					checkBallPoints: true,
+					validtionGamePoints: true,
 					// pattern: "^[0-9]*$",
 				},
 				ballB:{
 					required: true,
 					checkBallPoints: true,
+					validtionGamePoints: true,
 					// pattern: "^[0-9]*$",
 				},
 				ballC:{
 					required: true,
 					checkBallPoints: true,
+					validtionGamePoints: true,
+
 					// pattern: "^[0-9]*$",
 				},
 				gameTime:{
@@ -500,14 +504,17 @@ function initSettings(){
 				},
 				ballA:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					validtionGamePoints: "A points should be less than the B points",
 					// pattern:"Digits only",
 				},
 				ballB:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					validtionGamePoints: "B points should be less than the C points and greater than the A points.",
 					// pattern:"Digits only",
 				},
 				ballC:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					validtionGamePoints: "C greater than the B points",
 					// pattern:"Digits only",
 				},
 				// ballColor:{
@@ -539,7 +546,15 @@ function initSettings(){
 		return value>=1; 
 	});
 	$.validator.addMethod("checkBallPoints", function (value) {
-		return value>=0; 
+		return value>=1; 
+	});
+	$.validator.addMethod("validtionGamePoints", function(){
+		var form = document.getElementById("settings");
+		return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballB.value)<parseInt(form.ballC.value);
+	});
+	$(".ballPoints").change(function(e){
+		var validator = $( "#settings" ).validate();
+		validator.resetForm();
 	});
 	
 	$(".playingKeySettings").blur(function(e){
