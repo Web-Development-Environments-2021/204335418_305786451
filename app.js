@@ -443,7 +443,10 @@ function initSettings(){
 					checkBallPoints: true,
 					pattern: "^[0-9]*$",
 				},
-
+				gameTime:{
+					required: true,
+					pattern: "^[0-9]*$",
+				},
 			},
 			messages : {
 				upKey:{
@@ -478,6 +481,7 @@ function initSettings(){
 				// },
 				gameTime:{
 					checkGameTime:"The minimum time for a game is 1 minute",
+					pattern:"Digits only",
 				}
 			}
 			
@@ -498,7 +502,7 @@ function initSettings(){
 		return validateChoosenKeys(value,"right"); 
 	});
 	$.validator.addMethod("checkGameTime", function (value) {
-		return value>=1 && value<=10; 
+		return value>=1; 
 	});
 	$.validator.addMethod("checkBallPoints", function (value) {
 		return value>=0; 
@@ -518,19 +522,19 @@ function initSettings(){
 		form.left.value="ArrowLeft";
 		form.right.value="ArrowRight";
 		PlayingKeysSetup(chosenPlayingKeys);
-		var randomBallsAmount = Math.floor(Math.floor(Math.random() * 40))+50;
+		var randomBallsAmount = Math.floor(Math.floor(Math.random() * 41))+50;
 		form.ballsAmount.value=randomBallsAmount;
 		form.ballsAmountOutput.value=randomBallsAmount;
-		var randomGameTime=Math.floor(Math.floor(Math.random() * 9))+1;
+		var randomGameTime=Math.floor(Math.floor(Math.random() * 10))+1;
 		form.gameTime.value=randomGameTime;
-		form.gameTimeOutput.value= randomGameTime;
-		form.monstersAmount.selectedIndex=Math.floor(Math.floor(Math.random() * 3))+1;
+		// form.gameTimeOutput.value= randomGameTime;
+		form.monstersAmount.value=Math.floor(Math.floor(Math.random() * 4))+1;
 		form.colorA.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsA.value=Math.floor(Math.floor(Math.random() * 9))+5;
+		form.pointsA.value=Math.floor(Math.floor(Math.random() * 10))+1;
 		form.colorB.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsB.value=Math.floor(Math.floor(Math.random() * 14))+10;
+		form.pointsB.value=Math.floor(Math.floor(Math.random() * 15))+11;
 		form.colorC.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsC.value=Math.floor(Math.floor(Math.random() * 19))+15;
+		form.pointsC.value=Math.floor(Math.floor(Math.random() * 20))+26;
 		var validator = $( "#settings" ).validate();
 		validator.resetForm();
 	});
@@ -620,7 +624,7 @@ function resetSettingForm(){
 	form.right.value=gameSettings.playingKeys["right"].keyName;
 	form.ballsAmount.value=gameSettings.ballsAmount;
 	form.gameTime.value=gameSettings.gameTime;
-	form.monstersAmount.selectedIndex=gameSettings.monstersAmount;
+	form.monstersAmount.value=gameSettings.monstersAmount;
 	form.colorA.value=gameSettings.ballsSetting["A"].color;
 	form.pointsA.value=gameSettings.ballsSetting["A"].points;
 	form.colorB.value=gameSettings.ballsSetting["B"].color;
