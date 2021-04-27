@@ -17,6 +17,30 @@ var intervalLength=100;
 var activeUser="";
 // var playingKeys = [];
 // playingKeysSetup(playingKeys);
+var activeWalls=[];
+var wallsSet= [
+	[		
+		{i:3,j:3},
+		{i:3,j:4},
+		{i:3,j:5},
+		{i:6,j:1},
+		{i:6,j:2}
+	],
+	[		
+		{i:6,j:3},
+		{i:6,j:4},
+		{i:4,j:5},
+		{i:7,j:1},
+		{i:7,j:2}
+	],
+	[		
+		{i:4,j:4},
+		{i:5,j:4},
+		{i:3,j:6},
+		{i:4,j:6},
+		{i:5,j:6}
+	]
+]
 var maxPoints;
 var food_remain;
 var chosenPlayingKeys=[];
@@ -142,7 +166,6 @@ function getHit(){
 	removeFromScreen(pacman);
 	repositionPacman();
 }
-
 
 function restart(){
 	lives=5;
@@ -620,7 +643,7 @@ function resetSettingForm(){
 	form.right.value=gameSettings.playingKeys["right"].keyName;
 	form.ballsAmount.value=gameSettings.ballsAmount;
 	form.gameTime.value=gameSettings.gameTime;
-	form.monstersAmount.selectedIndex=gameSettings.monstersAmount;
+	form.monstersAmount.value=gameSettings.monstersAmount;
 	form.colorA.value=gameSettings.ballsSetting["A"].color;
 	form.pointsA.value=gameSettings.ballsSetting["A"].points;
 	form.colorB.value=gameSettings.ballsSetting["B"].color;
@@ -700,35 +723,37 @@ function Start() {
 	food = new Array();
 	score = 0;
 	ammo = ammoAmount;
-	activeGhosts=parseInt(gameSettings.monstersAmount);
+	activeGhosts=gameSettings.monstersAmount;
 	pac_color = "yellow";
-	maxPoints= 50 + parseInt(gameSettings.ballsAmount);
 	movingFood.i=5;
 	movingFood.j=5;
 	var cnt = 100;
 	food_remain = gameSettings.ballsAmount;
+	var aBalls = Math.round(food_remain*0.6);
+	var bBalls = Math.round(food_remain*0.3);
+	var cBalls = Math.round(food_remain*0.1);
+	if (aBalls+bBalls+cBalls < food_remain)
+		aBalls+=food_remain-(aBalls+bBalls+cBalls);
+	maxPoints= 50 + (aBalls*(parseInt(gameSettings.ballsSetting['A'].points)) +
+					 bBalls*(parseInt(gameSettings.ballsSetting['B'].points)) +
+					 cBalls*(parseInt(gameSettings.ballsSetting['C'].points)));
 	var pacman_remain = 1;
+	initBoard();
+	initFood();
+	activeWalls=[];
+	setWalls();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
-		food[i] = new Array();
+		// food[i] = new Array();
 		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
 			if (i==5 && j==5)
 				continue;	
-			if (
-				(i == 3 && j == 3) ||
-				(i == 3 && j == 4) ||
-				(i == 3 && j == 5) ||
-				(i == 6 && j == 1) ||
-				(i == 6 && j == 2)
-			) {
+			if (isWall(i, j)) {
 				board[i][j] = 4;
 			} else {
 				var randomNum = Math.random();
-				if (randomNum <= (1.0 * food_remain) / cnt) {
-					food_remain--;
-					food[i][j] = 1;
-				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt && i>1 && i<9 && j>1 && j<9) {
+				if (randomNum < (1.0 * pacman_remain) / cnt && i>1 && i<9 && j>1 && j<9) {
 					pacman.i = i;
 					pacman.j = j;
 					pacman_remain--;
@@ -740,12 +765,8 @@ function Start() {
 			}
 		}
 	}
-	while (food_remain > 0) {
-		var emptyCell = FindRandomEmptyCell(board);
-		food[emptyCell[0]][emptyCell[1]] = 1;
-		food_remain--;
-	}
-	food_remain=maxPoints-50;
+	spreadFood(aBalls,bBalls,cBalls);
+	food_remain=parseInt(gameSettings.ballsAmount);
 	keysDown = {};
 	addEventListener(
 		"keydown",
@@ -772,11 +793,58 @@ function Start() {
 
 
 }
+function setWalls(){
+	var index = Math.floor(Math.random()*3);
+	console.log(index);
+	activeWalls = wallsSet[index];
+}
+
+function initFood(){
+	food= new Array();
+	for (var i = 0; i < 10; i++) {
+		food[i] = new Array();
+		for (var j = 0; j < 10; j++) {
+			food[i][j]=0;
+		}
+	}
+}
+function initBoard(){
+	board= new Array();
+	for (var i = 0; i < 10; i++) {
+		board[i] = new Array();
+		for (var j = 0; j < 10; j++) {
+			board[i][j]=0;
+		}
+	}
+}
+function spreadFood(aBalls,bBalls,cBalls){
+	while (aBalls > 0) {
+		var emptyCell = FindRandomEmptyCell(board);
+		food[emptyCell[0]][emptyCell[1]] = 1;
+		aBalls--;
+	}
+	while (bBalls > 0) {
+		var emptyCell = FindRandomEmptyCell(board);
+		food[emptyCell[0]][emptyCell[1]] = 2;
+		bBalls--;
+	}
+	while (cBalls > 0) {
+		var emptyCell = FindRandomEmptyCell(board);
+		food[emptyCell[0]][emptyCell[1]] = 3;
+		cBalls--;
+	}
+}
+
+function isWall(x, y) {
+	for (var k =0; k<activeWalls.length ; k++)
+		if (activeWalls[k].i == x && activeWalls[k].j == y)
+			return true;
+}
 
 function FindRandomEmptyCell(board) { //find places for pacman and food
 	var i = Math.floor(Math.random() * 9 + 1);
 	var j = Math.floor(Math.random() * 9 + 1);
-	while (board[i][j] != 0 && food[i][j] != 0) {
+	while (board[i][j] != 0 || food[i][j] != 0) {
 		i = Math.floor(Math.random() * 9 + 1);
 		j = Math.floor(Math.random() * 9 + 1);
 	}
@@ -822,16 +890,16 @@ function Draw() {
 				context.arc(eyePos[0], eyePos[1], 5, 0, 2 * Math.PI); // eye
 				context.fillStyle = "black"; //color
 				context.fill();
-			} else if (food[i][j] == 1) {
+			} else if (food[i][j] == 1 || food[i][j] == 2 || food[i][j] == 3) {
 				context.beginPath();
 				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
 
 				if (food[i][j] == 1)
 					context.fillStyle = gameSettings.ballsSetting["A"].color;
-				// if (food[i][j] == 2)
-				// 	context.fillStyle = gameSettings.ballsSetting["B"].color;
-				// if (food[i][j] == 3)
-				// 	context.fillStyle = gameSettings.ballsSetting["C"].color;
+				else if (food[i][j] == 2)
+					context.fillStyle = gameSettings.ballsSetting["B"].color;
+				else if (food[i][j] == 3)
+					context.fillStyle = gameSettings.ballsSetting["C"].color;
 
 				context.fill();
 			} else if (board[i][j] == 4) {
@@ -909,7 +977,17 @@ function UpdatePosition() {
 		}
 	}
 	if (food[pacman.i][pacman.j] == 1) {
-		score++;
+		score+= parseInt(gameSettings.ballsSetting["A"].points);
+		food[pacman.i][pacman.j]=0;
+		food_remain--;
+	}
+	if (food[pacman.i][pacman.j] == 2) {
+		score+= parseInt(gameSettings.ballsSetting["B"].points);
+		food[pacman.i][pacman.j]=0;
+		food_remain--;
+	}
+	if (food[pacman.i][pacman.j] == 3) {
+		score+= parseInt(gameSettings.ballsSetting["C"].points);
 		food[pacman.i][pacman.j]=0;
 		food_remain--;
 	}
