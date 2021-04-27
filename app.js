@@ -1008,7 +1008,7 @@ function UpdatePosition() {
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
 		if (score<100){
-			window.alert("You are better than",score,"points!");
+			window.alert("You are better than "+score+" points!");
 			restart();
 		}
 		else {
