@@ -431,21 +431,22 @@ function initSettings(){
 				ballA:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
 				ballB:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
 				ballC:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
 				gameTime:{
 					required: true,
-					pattern: "^[0-9]*$",
+					checkGameTime: true,
+					// pattern: "^[0-9]*$",
 				},
 			},
 			messages : {
@@ -465,16 +466,16 @@ function initSettings(){
 					checkBallsAmount:"The balls amount need to be between 60 to 90 balls."
 				},
 				ballA:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				ballB:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				ballC:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				// ballColor:{
 				// 	checkPassword:"Please enter at least one character and one digit"
