@@ -116,16 +116,16 @@
 						<div id="ballsSetting">
 							<b>Balls setting:</b><br>
 							<br>A:  color&nbsp;<input type = "color" id="colorA" name="balls" class="ballColor" value="#ff0000">
-							&nbsp;points&nbsp;<input type = "text" id="pointsA" name="ballA" value=5 class="ballPoints"><br><br>
+							&nbsp;points&nbsp;<input type = "number" id="pointsA" name="ballA" value=5 class="ballPoints" min=1><br><br>
 							<br>B:  color&nbsp;<input type = "color" id="colorB" name="balls" class="ballColor" value="#00fa3e">
-							&nbsp;points&nbsp;<input type = "text" id="pointsB" name="ballB" value=10 class="ballPoints"><br><br>
+							&nbsp;points&nbsp;<input type = "number" id="pointsB" name="ballB" value=10 class="ballPoints" min=1><br><br>
 							<br>C:  color&nbsp;<input type = "color" id="colorC" name="balls" class="ballColor" value="#000000">
-							&nbsp;points&nbsp;<input type = "text" id="pointsC" name="ballC" value=15 class="ballPoints"><br><br>
+							&nbsp;points&nbsp;<input type = "number" id="pointsC" name="ballC" value=15 class="ballPoints" min=1><br><br>
 							
 						</div>
 						<br>Balls amount:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "range" id="ballsAmount" name="ballsAmount" min="50" max="90" value="50" oninput="this.nextElementSibling.value = this.value"><output id="ballsAmountOutput">50</output><br>
-						<br>Game time (min):<input type = "range" id="gameTime" name="gameTime" min="1" max="10" value="1" oninput="this.nextElementSibling.value = this.value"><output id="gameTimeOutput">1</output><br><br>
-						<!-- <br>Game time:&nbsp;<input type = "rage" id="gameTime" name="gameTime" value=60><br><br> -->
+						<!-- <br>Game time (min):<input type = "range" id="gameTime" name="gameTime" min="1" max="10" value="1" oninput="this.nextElementSibling.value = this.value"><output id="gameTimeOutput">1</output><br><br> -->
+						<br>Game time (min):&nbsp;<input type = "number" id="gameTime" name="gameTime" value=1 min=1><br><br>
 						&nbsp;Monsters amount:&nbsp;<select name="monstersAmount" id="monstersAmount" >
 							<option value=1>1</option>
 							<option value=2>2</option>

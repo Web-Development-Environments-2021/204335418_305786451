@@ -454,19 +454,23 @@ function initSettings(){
 				ballA:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
 				ballB:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
 				ballC:{
 					required: true,
 					checkBallPoints: true,
-					pattern: "^[0-9]*$",
+					// pattern: "^[0-9]*$",
 				},
-
+				gameTime:{
+					required: true,
+					checkGameTime: true,
+					// pattern: "^[0-9]*$",
+				},
 			},
 			messages : {
 				upKey:{
@@ -485,22 +489,23 @@ function initSettings(){
 					checkBallsAmount:"The balls amount need to be between 60 to 90 balls."
 				},
 				ballA:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				ballB:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				ballC:{
-					checkBallsPoints:"Positive score only",
-					pattern:"Digits only",
+					checkBallsPoints:"Please enter a value greater or equal to 1.",
+					// pattern:"Digits only",
 				},
 				// ballColor:{
 				// 	checkPassword:"Please enter at least one character and one digit"
 				// },
 				gameTime:{
 					checkGameTime:"The minimum time for a game is 1 minute",
+					pattern:"Digits only",
 				}
 			}
 			
@@ -521,7 +526,7 @@ function initSettings(){
 		return validateChoosenKeys(value,"right"); 
 	});
 	$.validator.addMethod("checkGameTime", function (value) {
-		return value>=1 && value<=10; 
+		return value>=1; 
 	});
 	$.validator.addMethod("checkBallPoints", function (value) {
 		return value>=0; 
@@ -541,19 +546,19 @@ function initSettings(){
 		form.left.value="ArrowLeft";
 		form.right.value="ArrowRight";
 		PlayingKeysSetup(chosenPlayingKeys);
-		var randomBallsAmount = Math.floor(Math.floor(Math.random() * 40))+50;
+		var randomBallsAmount = Math.floor(Math.floor(Math.random() * 41))+50;
 		form.ballsAmount.value=randomBallsAmount;
 		form.ballsAmountOutput.value=randomBallsAmount;
-		var randomGameTime=Math.floor(Math.floor(Math.random() * 9))+1;
+		var randomGameTime=Math.floor(Math.floor(Math.random() * 10))+1;
 		form.gameTime.value=randomGameTime;
-		form.gameTimeOutput.value= randomGameTime;
-		form.monstersAmount.selectedIndex=Math.floor(Math.floor(Math.random() * 3))+1;
+		// form.gameTimeOutput.value= randomGameTime;
+		form.monstersAmount.value=Math.floor(Math.floor(Math.random() * 4))+1;
 		form.colorA.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsA.value=Math.floor(Math.floor(Math.random() * 9))+5;
+		form.pointsA.value=Math.floor(Math.floor(Math.random() * 10))+1;
 		form.colorB.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsB.value=Math.floor(Math.floor(Math.random() * 14))+10;
+		form.pointsB.value=Math.floor(Math.floor(Math.random() * 15))+11;
 		form.colorC.value="#"+Math.floor(Math.random()*16777215).toString(16);
-		form.pointsC.value=Math.floor(Math.floor(Math.random() * 19))+15;
+		form.pointsC.value=Math.floor(Math.floor(Math.random() * 20))+26;
 		var validator = $( "#settings" ).validate();
 		validator.resetForm();
 	});
