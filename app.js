@@ -828,7 +828,6 @@ function Start() {
 }
 function setWalls(){
 	var index = Math.floor(Math.random()*3);
-	console.log(index);
 	activeWalls = wallsSet[index];
 }
 
