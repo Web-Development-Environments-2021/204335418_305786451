@@ -76,7 +76,10 @@ var direction="left";
 
 var lives = 5
 
-var movingFood={i:5,j:5,show:true,image:''};
+var movingFood = {i:5,j:5,show:true,image:''};
+
+var seenClock=false;
+var clock = {i:5, j:6, show:false ,image:'', starTime:0, hit:false};
 
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
@@ -98,6 +101,8 @@ function initImages(){
 	ghostImages[3].src= "images/yellow.png";
 	movingFood.image = new Image();
 	movingFood.image.src = "images/burger.png";
+	clock.image = new Image();
+	clock.image.src = "images/clock.png";
 
 }
 
@@ -151,6 +156,10 @@ function updateCollisions(){
 		score+=50;
 		movingFood.show=false;
 	}
+	if (clock.i==pacman.i && clock.j==pacman.j && clock.show){
+		clock.show=false;
+		clock.hit=true;
+	}
 	ghosts.forEach((ghost)=>{
 		if (ghost.i==pacman.i && ghost.j==pacman.j && ghost.show){
 			getHit();
@@ -171,6 +180,7 @@ function restart(){
 	lives=5;
 	score=0;
 	movingFood.show=true;
+
 	Start();
 }
 function repositionPacman() {
@@ -235,30 +245,30 @@ function getBestMove(ghost){
 
 }
 
-function moveFood(){
-	i=movingFood.i;
-	j=movingFood.j;
+function randomMove(obj){
+	i=obj.i;
+	j=obj.j;
 	var rand = (Math.random()*4);
 	if (rand>=0 && rand<=1 && j > 0 && board[i][j - 1] != 4) {
-		movingFood.i = i;
-		movingFood.j = j-1;
+		obj.i = i;
+		obj.j = j-1;
 		return;
 	}
 	if (rand>1 && rand<=2 && j < 9 && board[i][j + 1] != 4) {
-		movingFood.i = i;
-		movingFood.j = j+1;
+		obj.i = i;
+		obj.j = j+1;
 		return;
 	}
 
 	if (rand>2 && rand<=3 && i > 0 && board[i - 1][j] != 4) {
-		movingFood.i = i-1;
-		movingFood.j = j;
+		obj.i = i-1;
+		obj.j = j;
 		return;
 	}
 
 	if (rand>3 && rand<=4 && i < 9 && board[i + 1][j] != 4) {
-		movingFood.i = i+1;
-		movingFood.j = j;
+		obj.i = i+1;
+		obj.j = j;
 		return;
 	}
 }
@@ -732,6 +742,12 @@ function Start() {
 	pac_color = "yellow";
 	movingFood.i=5;
 	movingFood.j=5;
+	clock.i=5; 
+	clock.j=6; 
+	clock.show=false;
+	clock.starTime=0;
+	clock.hit=false;
+	seenClock=false;
 	var cnt = 100;
 	food_remain = gameSettings.ballsAmount;
 	var aBalls = Math.round(food_remain*0.6);
@@ -745,12 +761,9 @@ function Start() {
 	var pacman_remain = 1;
 	initBoard();
 	initFood();
-	activeWalls=[];
 	setWalls();
 	for (var i = 0; i < 10; i++) {
 		board[i] = new Array();
-		// food[i] = new Array();
-		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
 			if (i==5 && j==5)
 				continue;	
@@ -920,6 +933,8 @@ function Draw() {
 			drawObject(ghosts[i]);
 	if (movingFood.show) 
 		drawObject(movingFood);
+	if (clock.show) 
+		drawObject(clock);
 }
 
 var openMouth = true;
@@ -1005,6 +1020,20 @@ function UpdatePosition() {
 	}
 	var currentTime = new Date();
 	time_remaining = (gameSettings.gameTime*60)-(currentTime - start_time) / 1000;
+	if(clock.hit)
+		time_remaining+=15;
+
+	if (seenClock==false){
+		var rand = Math.floor(Math.random()*1000);
+		if (rand < 20){
+			clock.show=true;
+			seenClock=true;
+			clock.starTime=time_remaining;
+		}
+	}
+	if (clock.show==true && clock.starTime > time_remaining+10){
+		clock.show=false;
+	}
 	if (score >= 20 && time_remaining >= 50) {
 		pac_color = "green";
 	}
@@ -1021,7 +1050,9 @@ function UpdatePosition() {
 			restart();
 		}
 	}
-	
+	if (time_remaining<10){
+		document.getElementById("lblTime").style.color="red";
+	}
 	if (score == maxPoints) {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
@@ -1037,6 +1068,7 @@ function UpdatePosition() {
  	} else {
 		Draw();
 	}
-	moveFood();
 	updateCollisions();
+	randomMove(movingFood);
+	randomMove(clock);
 }

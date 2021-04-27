@@ -3,6 +3,7 @@ body
     height: 100%;
     margin: 0;
     background-color: steelblue;
+    font-family: fantasy;
 }
 .content
 {
@@ -49,6 +50,8 @@ body
 
 .game{
     text-align: center;
+    border: solid;
+    height: 680px;
 
 }
 .footer
