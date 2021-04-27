@@ -875,11 +875,11 @@ function isWall(x, y) {
 }
 
 function FindRandomEmptyCell(board) { //find places for pacman and food
-	var i = Math.floor(Math.random() * 9 + 1);
-	var j = Math.floor(Math.random() * 9 + 1);
+	var i = Math.floor(Math.random() * 10);
+	var j = Math.floor(Math.random() * 10);
 	while (board[i][j] != 0 || food[i][j] != 0) {
-		i = Math.floor(Math.random() * 9 + 1);
-		j = Math.floor(Math.random() * 9 + 1);
+		i = Math.floor(Math.random() * 10);
+		j = Math.floor(Math.random() * 10);
 	}
 	return [i, j];
 }
