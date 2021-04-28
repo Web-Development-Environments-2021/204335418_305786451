@@ -601,7 +601,7 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
 	gameSettings.ballsSetting["C"].points=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.value;
-	alert("New game settings!!!")
+	// alert("New game settings!!!")
 	ShowScreen("2");
 }
 function chooseKey(e){
@@ -747,6 +747,7 @@ function ValidateLogin(form){
 
 function Start() {
 	initShootListener();
+	document.getElementById("lblTime").style.color="black";
 	ghosts=[];
 	context = canvas.getContext("2d");
 	board = new Array();
@@ -774,11 +775,11 @@ function Start() {
 					 bBalls*(parseInt(gameSettings.ballsSetting['B'].points)) +
 					 cBalls*(parseInt(gameSettings.ballsSetting['C'].points)));
 	var pacman_remain = 1;
-	initBoard();
-	initFood();
+	resetArray(food);
+	resetArray(board);
 	setWalls();
 	for (var i = 0; i < 10; i++) {
-		board[i] = new Array();
+		// board[i] = new Array();
 		for (var j = 0; j < 10; j++) {
 			if (i==5 && j==5)
 				continue;	
@@ -831,24 +832,15 @@ function setWalls(){
 	activeWalls = wallsSet[index];
 }
 
-function initFood(){
-	food= new Array();
+function resetArray(array){
 	for (var i = 0; i < 10; i++) {
-		food[i] = new Array();
+		array[i] = new Array();
 		for (var j = 0; j < 10; j++) {
-			food[i][j]=0;
+			array[i][j]=0;
 		}
 	}
 }
-function initBoard(){
-	board= new Array();
-	for (var i = 0; i < 10; i++) {
-		board[i] = new Array();
-		for (var j = 0; j < 10; j++) {
-			board[i][j]=0;
-		}
-	}
-}
+
 function spreadFood(aBalls,bBalls,cBalls){
 	while (aBalls > 0) {
 		var emptyCell = FindRandomEmptyCell(board);
@@ -1064,6 +1056,9 @@ function UpdatePosition() {
 			restart();
 		}
 	}
+	updateCollisions();
+	randomMove(movingFood);
+	randomMove(clock);
 	if (time_remaining<10){
 		document.getElementById("lblTime").style.color="red";
 	}
@@ -1082,7 +1077,5 @@ function UpdatePosition() {
  	} else {
 		Draw();
 	}
-	updateCollisions();
-	randomMove(movingFood);
-	randomMove(clock);
+	
 }
