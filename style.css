@@ -21,8 +21,14 @@ fieldset
 
 .statsContainer
 {
-    width: 100%;
     font-size: x-large;
+    width: fit-content;
+    margin: auto;
+}
+#guns
+{
+    float: right;
+    margin: 10px;
 }
 
 .stats
@@ -59,7 +65,7 @@ fieldset
 
 .game{
     border: solid;
-    height: 730px;
+    height: 760px;
     width: 800px;
     margin: auto;
     text-align: center;
@@ -150,6 +156,7 @@ tr{
     border-style: none;
     width: 80px;
     margin: 10px;
+    text-align: center;
   }
   #logo
   {
