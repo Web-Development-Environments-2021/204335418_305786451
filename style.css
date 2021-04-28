@@ -4,6 +4,7 @@ body
     margin: 0;
     background-color: steelblue;
     font-family: fantasy;
+    text-align: center;
 }
 .content
 {
@@ -94,3 +95,16 @@ body
     text-decoration: none;
     cursor: pointer;
   }
+  #Login{
+    width:100px;
+    /* text-align: center; */
+  }
+  #settings{
+    border-color: #000 ;
+    border-width: thick;
+    padding-left: 50%;
+    padding-right: 50%;
+    width: 600px;
+    /* width: 1000px; */
+    text-align: left;
+  } 
