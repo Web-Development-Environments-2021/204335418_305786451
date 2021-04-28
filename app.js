@@ -15,8 +15,6 @@ var activePageId='#page1';
 var users=[];
 var intervalLength=100;
 var activeUser="";
-// var playingKeys = [];
-// playingKeysSetup(playingKeys);
 var activeWalls=[];
 var wallsSet= [
 	[		
@@ -53,7 +51,6 @@ gameSettings = {
 	gameTime: 1,
 	monstersAmount: 1,
 };
-
 PlayingKeysSetup(gameSettings.playingKeys);
 gameSettings.ballsSetting["A"]={color:"#ff0000", points:5};
 gameSettings.ballsSetting["B"]={color:"#00fa3e", points:10};
@@ -61,7 +58,6 @@ gameSettings.ballsSetting["C"]={color:"#000000", points:15};
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
-
 var ammoAmount = 5;
 var ammo;
 var guns;
@@ -69,18 +65,13 @@ var shootSound;
 var explosionSound;
 var bgSound;
 var food;
-
 var ghostImages=[];
 var ghosts=[]; //
 var ghostsAmount=3; //user's settings
 var activeGhosts; //ghosts in game
-
 var direction="left";
-
 var lives = 5
-
 var movingFood = {i:5,j:5,show:true,image:''};
-
 var seenClock=false;
 var clock = {i:5, j:6, show:false ,image:'', starTime:0, hit:false};
 
@@ -91,7 +82,7 @@ $(document).ready(function() {
 	initSounds();
 });
 
-function playMusic(){
+function playMusic(){ //Play background music
 	bgSound.play();
 }
 function stopMusic(){
@@ -99,7 +90,7 @@ function stopMusic(){
 	bgSound.stop();
 }
 
-function initImages(){
+function initImages(){ //Create all images used in the game
 	ghostImages[0] = new Image();
 	ghostImages[0].src= "images/blue.png";
 	ghostImages[1] = new Image();
@@ -108,7 +99,6 @@ function initImages(){
 	ghostImages[2].src= "images/green.png";
 	ghostImages[3] = new Image();
 	ghostImages[3].src= "images/yellow.png";
-	
 	movingFood.image = new Image();
 	movingFood.image.src = "images/burger.png";
 	clock.image = new Image();
@@ -116,7 +106,7 @@ function initImages(){
 
 }
 
-function initGhosts(){
+function initGhosts(){ //Create ghost objects to move around
 	for(var i=0; i<4; i++){ //initialize objects
 		ghosts.push(
 			{
@@ -130,7 +120,7 @@ function initGhosts(){
 	repositionGhosts();
 }
 
-function initSounds(){
+function initSounds(){ //Create sounds
 	shootSound = new sound("sounds/lasers.mp3");
 	shootSound.sound.volume=0.1;
 	explosionSound = new sound("sounds/explosion.mp3");
@@ -141,8 +131,7 @@ function initSounds(){
 }
 
 
-function repositionGhosts(){
-	//positions ghosts in corners
+function repositionGhosts(){ //Postition all ghosts to corners after getting hit
 	ghosts[0].i=0; 
 	ghosts[0].j=0;
 	ghosts[0].show = (activeGhosts>0);
@@ -160,11 +149,11 @@ function repositionGhosts(){
 	ghosts[3].show = (activeGhosts>3);
 }
 
-function drawObject(object){
+function drawObject(object){ //Draw an object to the canvas in its current location
 	context.drawImage(object.image, object.i*60, object.j*60, 60, 60);
 }
 
-function updateCollisions(){
+function updateCollisions(){ //Check if player gets hit or eats a treat
 	if (movingFood.i==pacman.i && movingFood.j==pacman.j && movingFood.show){
 		score+=50;
 		movingFood.show=false;
@@ -189,12 +178,6 @@ function getHit(){
 	repositionPacman();
 }
 
-function restart(){
-	lives=5;
-	score=0;
-	movingFood.show=true;
-	Start();
-}
 function repositionPacman() {
 	var emptyCell = FindRandomEmptyCell(board);
 	pacman.i = emptyCell[0];
@@ -217,7 +200,7 @@ function moveGhosts(){
 	});
 }
 
-function getBestMove(ghost){
+function getBestMove(ghost){ //Move a ghost towards the player based on the smallest Manhattan distance
 	var manhattan=21;
 	var i = ghost.i;
 	var j = ghost.j;
@@ -257,7 +240,7 @@ function getBestMove(ghost){
 
 }
 
-function randomMove(obj){
+function randomMove(obj){ //Choose a random step for moving food and clock objects
 	i=obj.i;
 	j=obj.j;
 	var rand = (Math.random()*4);
@@ -293,15 +276,23 @@ function initListeners(){
 	initAboutModal();
 }
 
-function initShootListener(){
+function initShootListener(){ //Listens on mouse down event to shoot objects on the canvas
 	canvas.addEventListener("mousedown",Shoot);
 }
 
-function Shoot(mouse){
+function Shoot(mouse){ //Shoot the canvas
 	if (ammo==0)
 		return;
 	ammo--;
 	showGuns(ammo);
+	var startX=movingFood.i*60;
+	var endX=movingFood.i*60+60;
+	var startY=movingFood.j*60;
+	var endY=movingFood.j*60+60;
+	if (mouse.offsetX >= startX && mouse.offsetX <= endX &&
+		mouse.offsetY >= startY && mouse.offsetY <= endY){
+		movingFood.show=false;
+	}
 	for (var i=0 ; i<ghosts.length; i++){
 		var startX=ghosts[i].i*60;
 		var endX=ghosts[i].i*60+60;
@@ -311,7 +302,6 @@ function Shoot(mouse){
 		if (mouse.offsetX >= startX && mouse.offsetX <= endX &&
 			mouse.offsetY >= startY && mouse.offsetY <= endY)
 		{
-				// alert("hit ghost",ghost.image.src);
 				ghosts[i].show=false;
 				Explosion(mouse);
 				removeFromScreen(ghosts[i]);
@@ -326,7 +316,7 @@ function Shoot(mouse){
 
 }
 
-function sound(src) {
+function sound(src) { //create a playable audio object
 	this.sound = document.createElement("audio");
 	this.sound.src = src;
 	this.sound.setAttribute("preload", "auto");
@@ -341,21 +331,20 @@ function sound(src) {
 	}
 }
 
-function Explosion(event){
-	//PLAY AN EXPLOSION SOUND/ ANIMATION AT E.OFFSET
+function Explosion(event){ //Play an explosion sound
 	explosionSound.play();
 }
 
-function PewPew(){
+function PewPew(){ //Play a shooting sound
 	shootSound.play();
 }
-function initButtons(){
+function initButtons(){ //Listen to page changes
 	$(".pageButton").click(function(e){
 		var id = e.target.getAttribute("page");
 		ShowScreen(id);
 	});
 }
-function DisabledPages(disabled){
+function DisabledPages(disabled){ //Disable page buttons
 	Array.from(document.getElementsByClassName("pageButton")).forEach(
 		function(button) {
 			button.disabled=disabled;
@@ -366,12 +355,11 @@ function initAboutModal() {
 	var about = document.getElementById("about");
 	$(".aboutButton").click(function () {
 		about.style.display = "block";
-		DisabledPages(true);
+		DisabledPages(true); //Disable page buttons while modal is shown
 	});
 	var span = document.getElementsByClassName("close")[0];
 	span.onclick = function () {
 		hideAboutModal(about);
-
 	};
 	window.onclick = function (e) {
 		if (e.target == document.getElementById("about")) {
@@ -442,7 +430,7 @@ function initSignUpForm(){
 	
 }
 
-function addNewUser(){
+function addNewUser(){ // Add a user to the registered users array
 	var form =  document.getElementById("signUp");
 	var newUser = {
 		fname: form.fname.value,
@@ -460,7 +448,7 @@ function initLoginForm(){
 		e.preventDefault();
 		var screen;
 		if(ValidateLogin(e.target)){
-			ShowScreen(5);
+			setSettings();
 		}
 		e.target.reset();
 	});
@@ -513,35 +501,35 @@ function initSettings(){
 			},
 			messages : {
 				upKey:{
-					checkUpKey:"You have chosen this key all ready. Please try again"
+					checkUpKey:"You have chosen this key allready. Please try again"
 				},
 				downKey:{
-					checkDownKey:"You have chosen this key all ready. Please try again"
+					checkDownKey:"You have chosen this key allready. Please try again"
 				},
 				leftKey:{
-					checkLeftKey:"You have chosen this key all ready. Please try again"
+					checkLeftKey:"You have chosen this key allready. Please try again"
 				},
 				rightKey:{
-					checkRightKey:"You have chosen this key all ready. Please try again"
+					checkRightKey:"You have chosen this key allready. Please try again"
 				},
 				ballsAmount:{
 					checkBallsAmount:"The balls amount need to be between 60 to 90 balls."
 				},
 				ballA:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePointsA: "A points should be less than the B points",
+					validtionGamePointsA: "A points should be less than B and C points values",
 				},
 				ballB:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePointsB: "B points should be less than the C points and greater than the A points.",
+					validtionGamePointsB: "B points should be less than C points value and greater than A.",
 				},
 				ballC:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePointsC: "C greater than the B points",
+					validtionGamePointsC: "C points should be greater than A and B points",
 				},
 				gameTime:{
 					checkGameTime:"The minimum time for a game is 1 minute",
-					pattern:"Digits only",
+					pattern:"Only digits allowed",
 				}
 			}
 			
@@ -764,7 +752,7 @@ function ShowScreen(pageId){
 	$(id).show();
 	activePageId=id;
 	if(pageId==2)
-		restart();
+		Start();
 }
 
 function ValidateLogin(form){
@@ -800,6 +788,7 @@ function Start() {
 	showGuns(ammoAmount);
 	// document.getElementById("lblTime").style.color="black";
 	ghosts=[];
+	lives=5;
 	context = canvas.getContext("2d");
 	board = new Array();
 	food = new Array();
@@ -809,6 +798,7 @@ function Start() {
 	pac_color = "yellow";
 	movingFood.i=5;
 	movingFood.j=5;
+	movingFood.show=true;
 	clock.i=5; 
 	clock.j=6; 
 	clock.show=false;
@@ -868,7 +858,7 @@ function Start() {
 		false
 	);
 	initGhosts();
-	window.alert("Press OK to start playing!\nUse your keyboard to move,\nand your mouse to SHOOT THE MONSTERS!");
+	window.alert("Press OK to start playing!\nUse your keyboard to move,\nand your mouse to SHOOT THE MONSTERS!\n(Don't shoot your burger though...)");
 	start_time = new Date();
 
 	if(!interval){
@@ -1079,7 +1069,7 @@ function UpdatePosition() {
 	
 	if (lives==0){
 		alert("Loser!");
-		restart();
+		Start();
 	}
 	var currentTime = new Date();
 	time_remaining = (gameSettings.gameTime*60)-(currentTime - start_time) / 1000;
@@ -1107,29 +1097,32 @@ function UpdatePosition() {
 		document.getElementById("lblTime").style.color="black";
 		if (score<100){
 			window.alert("You are better than "+score+" points!");
-			restart();
+			Start();
 		}
 		else {
 			window.alert("Winner!");
-			restart();
+			Start();
 		}
 	}
 	
 	if (time_remaining<10){
 		document.getElementById("lblTime").style.color="red";
 	}
+	else
+		document.getElementById("lblTime").style.color="black";
+
 	if (score == maxPoints) {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
 		window.alert("You won with maximum score! Well done!");
-		restart();
+		Start();
 	} else if (food_remain==0){
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
 		window.alert("No more food! Nice job!");
-		restart();
+		Start();
  	} else {
 		Draw();
 	}
