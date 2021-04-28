@@ -57,14 +57,24 @@ fieldset
 }
 
 .game{
-    text-align: center;
     border: solid;
-    height: 700px;
-
+    height: 730px;
+    width: 800px;
+    margin: auto;
+    text-align: center;
+}
+h2
+{
+    text-align: center;
 }
 .footer
 {
     height: 50px;
+    text-align: center;
+
+}
+tr{
+    height:15px;
 }
 
 .modal {
@@ -143,6 +153,7 @@ fieldset
   #logo
   {
     filter: drop-shadow(6px 11px 11px black);
+    margin-top: 50px;
   }
 
   #gameTime{
