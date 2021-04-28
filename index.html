@@ -20,10 +20,10 @@
 	<body>
 		<div id="navbar">
 			<button class="pageButton styled" page=1>Welcome</button>
-			<button class="pageButton styled" page=5>Play Now</button>
+			<button class="pageButton styled" page=5>New Game</button>
 			<button class="pageButton styled" page=3>Sign Up</button>
 			<button class="pageButton styled" page=4>Login</button>
-			<button class="pageButton styled" page=5>Settings</button>
+			<!-- <button class="pageButton styled" page=5>Settings</button> -->
 			<button class="aboutButton styled">About</button>
 		</div>
 		<div class="content"> 
@@ -32,6 +32,9 @@
 				<br><br>
 				<button class="pageButton styled" page=3>Sign Up</button>
 				<button class="pageButton styled" page=4>Login</button>
+				<br><br>
+				<img src="images/floater.png" id="floater">
+
 			</div>
 			<div class="game" id="page2" hidden>
 				<table>
@@ -204,7 +207,7 @@
 						<br>Balls amount:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "range" id="ballsAmount" name="ballsAmount" min="50" max="90" value="50" oninput="this.nextElementSibling.value = this.value"><output id="ballsAmountOutput">50</output><br>
 						<!-- <br>Game time (min):<input type = "range" id="gameTime" name="gameTime" min="1" max="10" value="1" oninput="this.nextElementSibling.value = this.value"><output id="gameTimeOutput">1</output><br><br> -->
 						<br>Game time (min):&nbsp;<input type = "number" id="gameTime" name="gameTime" value=1 min=1><br><br>
-						&nbsp;Monsters amount:&nbsp;<select name="monstersAmount" id="monstersAmount" >
+						Monsters amount:&nbsp;<select name="monstersAmount" id="monstersAmount" >
 							<option value=1>1</option>
 							<option value=2>2</option>
 							<option value=3>3</option>
@@ -228,6 +231,7 @@
 					<h3>Pacman game</h3>
 					<p>Developed by: Eilam Gal and Oded Berkovich</p><br>
 					<p>Used jQuery Validation Plugin to validate all forms.</p><br>
+					<p>Our main difficulties were understanding how to use event listeners correctly, and how to use the validation plugin.</p><br>
 				  </div>
 			</div>
 			<div id="start" class="modal" >
@@ -237,7 +241,9 @@
 			</div>		
 		</div>
 		<footer class="footer">
-			<p>FOOTER HERE</p>
+			<p>Send us an Email: </p>
+			<a href="mailto:Eilamg@post.bgu.ac.il">&nbsp;&nbsp;&nbsp;&nbsp;Eilam Gal &nbsp;&nbsp;</a>
+			<a href="mailto:Odedberk@post.bgu.ac.il">&nbsp;&nbsp;Oded Berkovich&nbsp;&nbsp;</a>
 		</footer>
 	</body>
 	
