@@ -10,7 +10,7 @@ var start_time;
 var time_remaining;
 var interval;
 var ghostsinterval;
-var loggedIn = true;
+var loggedIn = false;
 var activePageId='#page1';
 var users=[];
 var intervalLength=100;
