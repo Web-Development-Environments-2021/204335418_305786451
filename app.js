@@ -342,26 +342,42 @@ function initButtons(){
 		ShowScreen(id);
 	});
 }
-
+function DisabledPages(disabled){
+	Array.from(document.getElementsByClassName("pageButton")).forEach(
+		function(button) {
+			button.disabled=disabled;
+		}
+	);
+}
 function initAboutModal() {
 	var about = document.getElementById("about");
 	$(".aboutButton").click(function () {
 		about.style.display = "block";
+		DisabledPages(true);
 	});
 	var span = document.getElementsByClassName("close")[0];
 	span.onclick = function () {
-		about.style.display = "none";
+		hideAboutModal(about);
+
 	};
 	window.onclick = function (e) {
 		if (e.target == document.getElementById("about")) {
 			about.style.display = "none";
+			hideAboutModal(about);
 		}
 	};
 	window.onkeyup = function(e) {
-		if(e.keyCode==27) 
+		if(e.keyCode==27){ 
 			about.style.display = "none" ;
+			hideAboutModal(about);
+		}
 	}
 	
+}
+
+function hideAboutModal(about) {
+	about.style.display = "none";
+	DisabledPages(false);
 }
 
 function initSignUpForm(){
