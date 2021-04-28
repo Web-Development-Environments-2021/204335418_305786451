@@ -4,6 +4,7 @@ body
     margin: 0;
     background-color: steelblue;
     font-family: fantasy;
+    text-align: center;
 }
 .content
 {
@@ -137,3 +138,16 @@ fieldset
   {
     filter: drop-shadow(6px 11px 11px black);
   }
+  #Login{
+    width:100px;
+    /* text-align: center; */
+  }
+  #settings{
+    border-color: #000 ;
+    border-width: thick;
+    padding-left: 50%;
+    padding-right: 50%;
+    width: 600px;
+    /* width: 1000px; */
+    text-align: left;
+  } 
