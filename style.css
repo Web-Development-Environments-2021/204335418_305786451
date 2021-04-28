@@ -144,10 +144,7 @@ fieldset
   {
     filter: drop-shadow(6px 11px 11px black);
   }
-  #Login{
-    width:100px;
-    /* text-align: center; */
-  }
+
   #gameTime{
       width: 48px;
   }

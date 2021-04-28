@@ -63,9 +63,9 @@
 				
 			<div id="page3" hidden>
 				<h2>Sign up to enter the game!</h2>
-				<form class="cmxform" id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">
+				<form id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">
 					<fieldset>
-						<br><br>
+						<br>
 						<br/>Username<br>
 						<input type="text" id="username" name="username"><br>
 
@@ -93,10 +93,15 @@
 				  </form> 
 			</div>
 			<div id="page4" hidden>
+				<h2>Login to play!</h2>
 				<form id="Login">
 					<fieldset>
-						<input type = "text" id="username" name="username" class="inputBox" placeholder = "User Name" required /><br><br>
-						<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required /><br><br>
+						<br>
+						<br/>Username<br>
+						<input type = "text" id="username" name="username" class="inputBox" placeholder = "User Name" required /><br>
+						<br/>Password<br>
+						<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required /><br>
+						<br><br>
 						<button type="submit" id="loginSubmit" class="loginButton">Login</button>
 						<button type="reset" id="loginReset" class="loginButton">Reset</button> 
 					</fieldset> 

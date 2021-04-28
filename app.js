@@ -905,11 +905,14 @@ function GetKeyPressed() {
 		return 4;
 	}
 }
+function strip(number) {
+    return (parseFloat(number).toPrecision(3));
+}
 
 function Draw() {
 	canvas.width = canvas.width; //clean board
 	lblScore.value = score;
-	lblTime.value = time_remaining;
+	lblTime.value = strip(time_remaining);
 	lblLives.value = lives;
 	lblAmmo.value = ammo;
 	for (var i = 0; i < 10; i++) {
