@@ -80,8 +80,9 @@ fieldset.signUpForm
 h2
 {
     text-align: center;
-    color: #11003c;
-    text-shadow: 2px 1px 10px #ffffff;
+    color: #e4b21d;
+    text-shadow: 2px 1px 20px #ffffff;
+    -webkit-text-stroke: 1px black;
 }
 .footer
 {
@@ -131,6 +132,7 @@ tr{
     text-align: center;
     font-size: 22px;
     text-shadow: 1px 1px 1px #988484;
+    
   }
 
   .close {
