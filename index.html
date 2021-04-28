@@ -32,7 +32,7 @@
 				<br><br>
 				<button class="pageButton styled" page=3>Sign Up</button>
 				<button class="pageButton styled" page=4>Login</button>
-				<br><br>
+				<br><br><br>
 				<img src="images/floater.png" id="floater">
 
 			</div>
@@ -187,12 +187,7 @@
 								<td>Down key:</td>
 								<td><input type = "button" id="down" name="downKey" class="playingKeySettings" value = "ArrowDown" /></td>
 							</tr>
-							<!-- Up key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="up" name="upKey" class="playingKeySettings" value = "ArrowUp" /><br><br>	 -->
-							<!-- Left key:&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="left" name="leftKey" class="playingKeySettings" value = "ArrowLeft" /><br><br> -->
-							<!-- Right key:&nbsp;&nbsp;<input type = "button" id="right" name="rightKey" class="playingKeySettings" value = "ArrowRight" /><br><br> -->
-							<!-- Down key:&nbsp;<input type = "button" id="down" name="downKey" class="playingKeySettings" value = "ArrowDown" /><br><br> -->
 						</table><br>
-						<!-- <button type="submit" id="setPlayingKeysSubmit" class="setPlayingKeysSubmit">Set</button><br><br> -->
 
 						<div id="ballsSetting">
 							<b>Balls setting:</b><br>
@@ -205,7 +200,6 @@
 							
 						</div>
 						<br>Balls amount:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "range" id="ballsAmount" name="ballsAmount" min="50" max="90" value="50" oninput="this.nextElementSibling.value = this.value"><output id="ballsAmountOutput">50</output><br>
-						<!-- <br>Game time (min):<input type = "range" id="gameTime" name="gameTime" min="1" max="10" value="1" oninput="this.nextElementSibling.value = this.value"><output id="gameTimeOutput">1</output><br><br> -->
 						<br>Game time (min):&nbsp;<input type = "number" id="gameTime" name="gameTime" value=1 min=1><br><br>
 						Monsters amount:&nbsp;<select name="monstersAmount" id="monstersAmount" >
 							<option value=1>1</option>
@@ -218,11 +212,6 @@
 						
 					</fieldset>
 
-
-					<!-- <input type = "text" id="username" name="username" class="inputBox" placeholder = "User Name" required />
-					<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required />
-					<button type="submit" id="loginSubmit" class="loginButton">Login</button>
-					<button type="reset" id="loginReset" class="loginButton">Reset</button>   -->
 				</form>
 			</div>
 			<div id="about" class="modal" >

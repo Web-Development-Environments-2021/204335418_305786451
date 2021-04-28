@@ -10,7 +10,7 @@ var start_time;
 var time_remaining;
 var interval;
 var ghostsinterval;
-var loggedIn = false;
+var loggedIn = true;
 var activePageId='#page1';
 var users=[];
 var intervalLength=100;
@@ -31,12 +31,15 @@ var wallsSet= [
 		{i:7,j:1},
 		{i:7,j:2}
 	],
-	[		
+	[	{i:3,j:4},	
 		{i:4,j:4},
 		{i:5,j:4},
+		{i:6,j:4},
 		{i:3,j:6},
 		{i:4,j:6},
-		{i:5,j:6}
+		{i:5,j:6},
+		{i:6,j:6}
+
 	]
 ]
 var maxPoints;
@@ -48,7 +51,7 @@ gameSettings = {
 	playingKeys: [],
 	ballsAmount: 50,
 	ballsSetting: [],
-	gameTime: 1,
+	gameTime: 0.5,
 	monstersAmount: 1,
 };
 PlayingKeysSetup(gameSettings.playingKeys);
@@ -354,8 +357,14 @@ function DisabledPages(disabled){ //Disable page buttons
 function initAboutModal() {
 	var about = document.getElementById("about");
 	$(".aboutButton").click(function () {
-		about.style.display = "block";
-		DisabledPages(true); //Disable page buttons while modal is shown
+		if (about.style.display != "block"){
+			about.style.display = "block";
+			DisabledPages(true); //Disable page buttons while modal is shown
+		}
+		else {
+			about.style.display = "none";
+			DisabledPages(false); //Disable page buttons while modal is shown
+		}
 	});
 	var span = document.getElementsByClassName("close")[0];
 	span.onclick = function () {
@@ -741,6 +750,9 @@ function ShowScreen(pageId){
 	if (activePageId=="#page3" && pageId!=3){
 		document.getElementById("signUp").reset();
 	}
+	if (activePageId=="#page4" && pageId!=4){
+		document.getElementById("Login").reset();
+	}
 	if(pageId==2 && !loggedIn)
 	{
 		alert("You must be logged in to play the game!");
@@ -973,7 +985,7 @@ function Draw() {
 			} else if (board[i][j] == 4) {
 				context.beginPath();
 				context.rect(center.x - 30, center.y - 30, 60, 60);
-				context.fillStyle = "grey"; //color
+				context.fillStyle = "#ffca0c"; //color
 				context.fill();
 			}
 		}
@@ -1068,7 +1080,7 @@ function UpdatePosition() {
 	board[pacman.i][pacman.j] = 2;
 	
 	if (lives==0){
-		alert("Loser!");
+		alert("Loser! No more lives left!");
 		Start();
 	}
 	var currentTime = new Date();
@@ -1087,7 +1099,7 @@ function UpdatePosition() {
 	if (clock.show==true && clock.starTime > time_remaining+10){
 		clock.show=false;
 	}
-	if (score >= 20 && time_remaining >= 50) {
+	if (score >= maxPoints/2 && time_remaining >= 50) {
 		pac_color = "green";
 	}
 	if (time_remaining<=0){
@@ -1096,11 +1108,11 @@ function UpdatePosition() {
 		interval=undefined;
 		document.getElementById("lblTime").style.color="black";
 		if (score<100){
-			window.alert("You are better than "+score+" points!");
+			window.alert("Time's up!\nYou are better than "+score+" points!");
 			Start();
 		}
 		else {
-			window.alert("Winner!");
+			window.alert("Time's up, Winner!");
 			Start();
 		}
 	}
@@ -1115,13 +1127,13 @@ function UpdatePosition() {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
-		window.alert("You won with maximum score! Well done!");
+		window.alert("You won with a maximum score of "+score+" points! Well done!");
 		Start();
 	} else if (food_remain==0){
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
-		window.alert("No more food! Nice job!");
+		window.alert("No more food!\nYou got "+score+" points, Nice job!");
 		Start();
  	} else {
 		Draw();
