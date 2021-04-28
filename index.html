@@ -104,13 +104,44 @@
 			</div>
 			<div id="page5" hidden>
 				<form id="settings" action="javascript:setSettings()" method="post" enctype="text/plain">
-					<fieldset>
-						<div id="playingKeys" name ="playingKeys"><b>Keys settings:</b><br><br>
-							Up key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="up" name="upKey" class="playingKeySettings" value = "ArrowUp" /><br><br>	
-							Left key:&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="left" name="leftKey" class="playingKeySettings" value = "ArrowLeft" /><br><br>
-							Right key:&nbsp;&nbsp;<input type = "button" id="right" name="rightKey" class="playingKeySettings" value = "ArrowRight" /><br><br>
-							Down key:&nbsp;<input type = "button" id="down" name="downKey" class="playingKeySettings" value = "ArrowDown" /><br><br>
-						</div><br>
+					<fieldset id="settingsField">
+						<table id="playingKeys" name ="playingKeys"><b>Keys settings:</b><br><br>
+							<tr>
+								<td>Up key:</td>
+								<td><input type = "button" id="up" name="upKey" class="playingKeySettings" value = "ArrowUp" /></td>
+							</tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr>
+								<td>Left key:</td>
+								<td><input type = "button" id="left" name="leftKey" class="playingKeySettings" value = "ArrowLeft" /></td>
+							</tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr>
+								<td>Right key:</td>
+								<td><input type = "button" id="right" name="rightKey" class="playingKeySettings" value = "ArrowRight" /></td>
+							</tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr></tr>
+							<tr>
+								<td>Down key:</td>
+								<td><input type = "button" id="down" name="downKey" class="playingKeySettings" value = "ArrowDown" /></td>
+							</tr>
+							<!-- Up key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="up" name="upKey" class="playingKeySettings" value = "ArrowUp" /><br><br>	 -->
+							<!-- Left key:&nbsp;&nbsp;&nbsp;&nbsp;<input type = "button" id="left" name="leftKey" class="playingKeySettings" value = "ArrowLeft" /><br><br> -->
+							<!-- Right key:&nbsp;&nbsp;<input type = "button" id="right" name="rightKey" class="playingKeySettings" value = "ArrowRight" /><br><br> -->
+							<!-- Down key:&nbsp;<input type = "button" id="down" name="downKey" class="playingKeySettings" value = "ArrowDown" /><br><br> -->
+						</table><br>
 						<!-- <button type="submit" id="setPlayingKeysSubmit" class="setPlayingKeysSubmit">Set</button><br><br> -->
 
 						<div id="ballsSetting">
@@ -132,8 +163,8 @@
 							<option value=3>3</option>
 							<option value=4>4</option>
 						  </select><br><br>
-						<button type="submit" id="settingsSubmit" class="submit">Play now</button>
-						<button type="button" id="randomSettings" >Random</button>
+						<button type="submit" id="settingsSubmit" class="settingsButton">Play now</button>
+						<button type="button" id="randomSettings" class="settingsButton">Random</button>
 						
 					</fieldset>
 
