@@ -14,7 +14,7 @@
 		<title>Pacman</title>
 		<link rel="icon" href="images/icon.png">
 	</head>
-
+	
 	<body>
 		<div id="navbar">
 			<button class="pageButton" page=1>Welcome</button>
@@ -31,36 +31,69 @@
 				<button class="pageButton" page=3>Sign Up</button>
 				<button class="pageButton" page=4>Login</button>
 			</div>
+		
 			<div class="game" id="page2" hidden>
-				<div class="statsContainer">
-					<div class="stats">
-						<div class="stat" id="score">
-						<label for="lblScore">Score:</label>
-						<input id="lblScore" type="text" />
+				<table>
+					<td id="settingsTable">
+						<table border="1" id="settingsTable">
+							<tr>
+								<td id="ballASet">BallA</td>
+								<td id="ballCellA"></td>
+							</tr>
+							<tr>
+								<td>ballB</td>
+								<td id="ballCellB"></td>
+							</tr>
+							<tr>
+								<td>BallC</td>
+								<td id="ballCellC"></td>
+							</tr>
+							<tr>
+								<td>Food</td>
+								<td id="foodCell"></td>
+							</tr>
+							<tr>
+								<td>Clock</td>
+								<td id="clockCell"></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<div class="statsContainer">
+							<div class="stats">
+								<div class="stat" id="score">
+								<label for="lblScore">Score:</label>
+								<input id="lblScore" type="text" />
+								</div>
+								<div class="stat"  id="lives">
+									<label for="lblLives">Lives:</label>
+									<input id="lblLives" type="text" />
+								</div>
+							</div>
 						</div>
-						<div class="stat"  id="lives">
-							<label for="lblLives">Lives:</label>
-							<input id="lblLives" type="text" />
+						<br>
+						<!-- <div class="canvasContainer"> -->
+							<canvas id="canvas" height="600" width="600"></canvas>
+						<!-- </div> -->
+						<br>
+						<div class="statsContainer">
+							<div class="stats">
+								<div class="stat" id="time">
+									<label for="lblTime">Time:</label>
+									<input id="lblTime" type="text" />
+								</div>
+								<div class="stat" id="ammo">
+									<label for="lblAmmo">Ammo:</label>
+									<input id="lblAmmo" type="text" />
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-				<br>
-				<!-- <div class="canvasContainer"> -->
-					<canvas id="canvas" height="600" width="600"></canvas>
-				<!-- </div> -->
-				<br>
-				<div class="statsContainer">
-					<div class="stats">
-						<div class="stat" id="time">
-							<label for="lblTime">Time:</label>
-							<input id="lblTime" type="text" />
-						</div>
-						<div class="stat" id="ammo">
-							<label for="lblAmmo">Ammo:</label>
-							<input id="lblAmmo" type="text" />
-						</div>
-					</div>
-				</div>
+					</td>
+					<td>
+
+					</td>
+				</table>
+					
 			</div>
 				
 			<div id="page3" hidden>

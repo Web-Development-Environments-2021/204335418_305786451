@@ -619,7 +619,7 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].points=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.value;
 	document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
-	document.getElementById("ballCellC").style.backgroundColor=form.colorB.value;
+	document.getElementById("ballCellB").style.backgroundColor=form.colorB.value;
 	document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
 	ShowScreen("2");
 }
