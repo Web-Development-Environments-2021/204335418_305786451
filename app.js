@@ -13,7 +13,7 @@ var ghostsinterval;
 var loggedIn = true;
 var activePageId='#page1';
 var users=[];
-var intervalLength=100;
+var intervalLength=150;
 var activeUser="";
 // var playingKeys = [];
 // playingKeysSetup(playingKeys);
@@ -61,7 +61,7 @@ gameSettings.ballsSetting["C"]={color:"#000000", points:15};
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
-var ammoAmount = 3;
+var ammoAmount = 5;
 var ammo;
 var guns;
 var shootSound;
@@ -123,7 +123,7 @@ function initGhosts(){
 }
 
 function initSounds(){
-	shootSound = new sound("sounds/laser.mp3");
+	shootSound = new sound("sounds/lasers.mp3");
 	shootSound.sound.volume=0.1;
 	explosionSound = new sound("sounds/explosion.mp3");
 	explosionSound.sound.volume=0.2;
@@ -849,12 +849,12 @@ function Start() {
 		false
 	);
 	initGhosts();
-	window.alert("Press ok to start playing!");
+	window.alert("Press OK to start playing!\nUse your keyboard to move,\nand your mouse to SHOOT THE MONSTERS!");
 	start_time = new Date();
 
 	if(!interval){
 		interval = setInterval(UpdatePosition, intervalLength);
-		ghostsinterval = setInterval(moveGhosts, intervalLength+100);
+		ghostsinterval = setInterval(moveGhosts, intervalLength+150);
 	}
 
 
