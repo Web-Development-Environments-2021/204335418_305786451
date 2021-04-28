@@ -8,7 +8,7 @@ body
 }
 .content
 {
-    margin-top: 90px;
+    margin-top: 65px;
     min-height: 100%;
 }
 
@@ -17,6 +17,11 @@ fieldset
     width: fit-content;
     margin: auto;
     border : solid thick;
+}
+
+fieldset.signUpForm
+{
+    width : 550px;
 }
 
 .statsContainer
@@ -76,9 +81,13 @@ h2
 }
 .footer
 {
-    height: 50px;
+    height: 30px;
     text-align: center;
-
+}
+footer p
+{
+    margin-top: 3px;
+    margin-bottom: 0px;
 }
 tr{
     height:15px;
@@ -131,20 +140,20 @@ tr{
   {
     text-align: center;
   }
-  .pageButton, .aboutButton
+  .styled
   {
     background: #f38120;
     display: inline-block;
     position: relative;
     text-align: center;
     font-size: 20px;
-    padding: 15px;
+    padding: 10px;
     text-decoration: none;
     color: white;
     box-shadow: 2px 2px 3px 0px black;
     font-family: fantasy;
   }
-  .pageButton .hover .focus {
+  .styled .hover .focus {
     background: #f38120;
     box-shadow: inset 3px 3px 3px 0px black;
   }
@@ -171,13 +180,23 @@ tr{
   .playingKeySettings{
       width: 85px;
   }
-  .settingsButton{
-      width: 80px;
-  }
   #settingsTable{
       width: 100px;
   }
 
 #ballASet{
     width: 50px;
+}
+
+#settingsTable td
+{
+    width: 45px;
+    height: 40px;
+}
+
+#settingTable 
+{
+    width: 100px;
+    height: 350px;
+
 }

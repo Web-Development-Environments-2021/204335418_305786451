@@ -10,7 +10,7 @@ var start_time;
 var time_remaining;
 var interval;
 var ghostsinterval;
-var loggedIn = true;
+var loggedIn = false;
 var activePageId='#page1';
 var users=[];
 var intervalLength=100;
@@ -60,12 +60,14 @@ gameSettings.ballsSetting["B"]={color:"#00fa3e", points:10};
 gameSettings.ballsSetting["C"]={color:"#000000", points:15};
 users["oded"]={"firstName":"oded", "lasName":"Berkovich", "password":"123"};
 users["eilam"]={"firstName":"eilam", "lasName":"gal"};
+users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
 
 var ammoAmount = 5;
 var ammo;
 var guns;
 var shootSound;
 var explosionSound;
+var bgSound;
 var food;
 
 var ghostImages=[];
@@ -82,14 +84,20 @@ var movingFood = {i:5,j:5,show:true,image:''};
 var seenClock=false;
 var clock = {i:5, j:6, show:false ,image:'', starTime:0, hit:false};
 
-users["k"]={"firstname":"tester", "lastname":"tester", "password":"k"};
-users["eilam"]={"firstName":"eilam", "lastname":"gal", "password":"eilamtheking"};
 
 $(document).ready(function() {
 	initListeners();
 	initImages();
 	initSounds();
 });
+
+function playMusic(){
+	bgSound.play();
+}
+function stopMusic(){
+	bgSound.sound.currentTime = 0;
+	bgSound.stop();
+}
 
 function initImages(){
 	ghostImages[0] = new Image();
@@ -127,8 +135,11 @@ function initSounds(){
 	shootSound.sound.volume=0.1;
 	explosionSound = new sound("sounds/explosion.mp3");
 	explosionSound.sound.volume=0.2;
-
+	bgSound= new sound("sounds/music.mp3");
+	bgSound.sound.volume=0.5;
+	bgSound.sound.loop=true;
 }
+
 
 function repositionGhosts(){
 	//positions ghosts in corners
@@ -408,16 +419,16 @@ function initSignUpForm(){
 			},
 			messages : {
 				fname:{
-					pattern:"No digits allowed"
+					pattern:" No digits allowed"
 				},
 				lname:{
-					pattern:"No digits allowed"
+					pattern:" No digits allowed"
 				},
 				password:{
-					checkPassword:"Please enter at least one character and one digit"
+					checkPassword:" Please enter at least one character and one digit"
 				},
 				username:{
-					checkUsername:"Username already exists, please choose another one"
+					checkUsername:" Username already exists, please choose another one"
 				}
 			}	
 		}
@@ -622,6 +633,9 @@ function setSettings(){
 	document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
 	document.getElementById("ballCellB").style.backgroundColor=form.colorB.value;
 	document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
+	document.getElementById("ballAPoints").textContent=form.pointsA.value;
+	document.getElementById("ballBPoints").textContent=form.pointsB.value;
+	document.getElementById("ballCPoints").textContent=form.pointsC.value;
 	ShowScreen("2");
 }
 function chooseKey(e){
@@ -727,6 +741,7 @@ function ShowScreen(pageId){
 		resetSettingForm();
 	}
 	if (activePageId=="#page2" && pageId!=2){
+		stopMusic();
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
@@ -777,6 +792,7 @@ function showGuns(amount){
 	);
 }
 function Start() {
+	playMusic();
 	initShootListener();
 	showGuns(ammoAmount);
 	// document.getElementById("lblTime").style.color="black";
@@ -930,7 +946,7 @@ function Draw() {
 	lblScore.value = score;
 	lblTime.value = strip(time_remaining);
 	lblLives.value = lives;
-	lblAmmo.value = ammo;
+	lblUser.value = activeUser;	
 	for (var i = 0; i < 10; i++) {
 		for (var j = 0; j < 10; j++) {
 			var center = new Object();

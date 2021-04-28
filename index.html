@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<!––Pacman assignemt by Eilam gal and Oded Berkovich -->
 		<script src="./jquery-3.4.1.slim.min.js"></script>
 		<script type="text/javascript" src="./app.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
@@ -10,6 +11,7 @@
 				window.history.replaceState( null, null, window.location.href );
 			}
 		</script>
+		<meta name="Descriptiom" content="Our course assignment for building a Single-Page-Applcation implementing a Pacman game.">
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<title>Pacman</title>
 		<link rel="icon" href="images/icon.png">
@@ -17,25 +19,24 @@
 	
 	<body>
 		<div id="navbar">
-			<button class="pageButton" page=1>Welcome</button>
-			<button class="pageButton" page=5>Play Now</button>
-			<button class="pageButton" page=3>Sign Up</button>
-			<button class="pageButton" page=4>Login</button>
-			<button class="pageButton" page=5>Settings</button>
-			<button class="aboutButton">About</button>
+			<button class="pageButton styled" page=1>Welcome</button>
+			<button class="pageButton styled" page=5>Play Now</button>
+			<button class="pageButton styled" page=3>Sign Up</button>
+			<button class="pageButton styled" page=4>Login</button>
+			<button class="pageButton styled" page=5>Settings</button>
+			<button class="aboutButton styled">About</button>
 		</div>
 		<div class="content"> 
 			<div id="page1">
 				<img src="images/logo.png" id="logo">
 				<br><br>
-				<button class="pageButton" page=3>Sign Up</button>
-				<button class="pageButton" page=4>Login</button>
+				<button class="pageButton styled" page=3>Sign Up</button>
+				<button class="pageButton styled" page=4>Login</button>
 			</div>
-		
 			<div class="game" id="page2" hidden>
 				<table>
-					<td id="settingsTable">
-						<table border="1" id="settingsTable">
+					<td>
+						<table id="settingsTable">
 							<tr>
 								<td id="ballCellA"></td>
 								<td id="ballAPoints"></td>
@@ -50,25 +51,33 @@
 								<td id="ballCPoints"></td>
 							</tr>
 							<tr>
-								<td id="foodCell"></td>
-								<td id="foodImage"></td>
+								<td id="foodCell">
+									<img src="images/burger.png" height="35px">
+								</td>
+								<td>50 points</td>
 							</tr>
 							<tr>
-								<td id="clockCell"></td>
-								<td id="clockImage"></td>
+								<td id="clockCell">
+									<img src="images/clock.png" height="35px">
+								</td>
+								<td>+15 Seconds</td>
 							</tr>
 						</table>
 					</td>
 					<td>
 						<div class="statsContainer">
 							<div class="stats">
+								<div class="stat">
+									<label for="lblUser">Username:</label>
+									<input id="lblUser" type="text" disabled/>
+								</div>
 								<div class="stat" id="score">
-								<label for="lblScore">Score:</label>
-								<input id="lblScore" type="text" />
+									<label for="lblScore"> Score:</label>
+									<input id="lblScore" type="text" disabled/>
 								</div>
 								<div class="stat"  id="lives">
-									<label for="lblLives">Lives:</label>
-									<input id="lblLives" type="text" />
+									<label for="lblLives"> Lives:</label>
+									<input id="lblLives" type="text" disabled/>
 								</div>
 							</div>
 						</div>
@@ -77,8 +86,8 @@
 						<div class="statsContainer">
 							<div class="stats">
 								<div class="stat" id="time">
-									<label for="lblTime">Time:</label>
-									<input id="lblTime" type="text" />
+									<label for="lblTime">Time:</label><br>
+									<input id="lblTime" type="text" disabled/>
 								</div>
 								<div class="stat" id="ammo">
 									<label for="lblAmmo">Ammo:</label>
@@ -109,7 +118,7 @@
 			<div id="page3" hidden>
 				<h2>Sign up to enter the game!</h2>
 				<form id="signUp" action="javascript:addNewUser()" method="post" enctype="text/plain">
-					<fieldset>
+					<fieldset class="signUpForm">
 						<br>
 						<br/>Username<br>
 						<input type="text" id="username" name="username"><br>
@@ -130,8 +139,8 @@
 						<input type="date" id="bday" name="bday"><br>
 
 						<br><br>
-						<input class="submit" type="submit" value="Submit">
-						<input class="reset" type="reset" value="Reset">
+						<input class="submit styled" type="submit" value="Submit">
+						<input class="reset styled" type="reset" value="Reset">
 						<br/>
 						<br/>
 					</fieldset>
@@ -147,8 +156,8 @@
 						<br/>Password<br>
 						<input type = "password" id="password" name="password" class="inputBox" placeholder = "Password" required /><br>
 						<br><br>
-						<button type="submit" id="loginSubmit" class="loginButton">Login</button>
-						<button type="reset" id="loginReset" class="loginButton">Reset</button> 
+						<button type="submit" id="loginSubmit" class="loginButton styled">Login</button>
+						<button type="reset" id="loginReset" class="loginButton styled">Reset</button> 
 					</fieldset> 
 				</form>
 			</div>
@@ -201,8 +210,8 @@
 							<option value=3>3</option>
 							<option value=4>4</option>
 						  </select><br><br>
-						<button type="submit" id="settingsSubmit" class="settingsButton">Play now</button>
-						<button type="button" id="randomSettings" class="settingsButton">Random</button>
+						<button type="submit" id="settingsSubmit" class="settingsButton styled">Play now</button>
+						<button type="button" id="randomSettings" class="settingsButton styled">Random</button>
 						
 					</fieldset>
 
