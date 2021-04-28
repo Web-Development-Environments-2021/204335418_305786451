@@ -538,16 +538,16 @@ function initSettings(){
 		return value>=50 && value<=90; 
 	});
 	$.validator.addMethod("checkUpKey", function (value) {
-		return validateChoosenKeys(value,"up"); 
+		return validateChoosenKeys(value,"up"); //check if the chosen up-key is not used
 	});
 	$.validator.addMethod("checkDownKey", function (value) {
-		return validateChoosenKeys(value,"down"); 
+		return validateChoosenKeys(value,"down"); //check if the chosen down-key is not used
 	});
 	$.validator.addMethod("checkLeftKey", function (value) {
-		return validateChoosenKeys(value,"left"); 
+		return validateChoosenKeys(value,"left"); //check if the chosen left-key is not used
 	});
 	$.validator.addMethod("checkRightKey", function (value) {
-		return validateChoosenKeys(value,"right"); 
+		return validateChoosenKeys(value,"right"); //check if the chosen right-key is not used
 	});
 	$.validator.addMethod("checkGameTime", function (value) {
 		return value>=1; 
@@ -555,31 +555,31 @@ function initSettings(){
 	$.validator.addMethod("checkBallPoints", function (value) {
 		return value>=1; 
 	});
-	$.validator.addMethod("validtionGamePointsA", function(){
+	$.validator.addMethod("validtionGamePointsA", function(){//check that A points is less than B and C points
 		var form = document.getElementById("settings");
 		return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballA.value)<parseInt(form.ballC.value);
 	});
-	$.validator.addMethod("validtionGamePointsB", function(){
+	$.validator.addMethod("validtionGamePointsB", function(){//check that B points is less than C and greater than C points
 		var form = document.getElementById("settings");
 		return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballB.value)<parseInt(form.ballC.value);
 	});
-	$.validator.addMethod("validtionGamePointsC", function(){
+	$.validator.addMethod("validtionGamePointsC", function(){//check that C points is greater than A and B points
 		var form = document.getElementById("settings");
 		return parseInt(form.ballB.value)<parseInt(form.ballC.value) && parseInt(form.ballA.value)<parseInt(form.ballC.value);
 	});
-	$(".ballPoints").change(function(e){
+	$(".ballPoints").change(function(e){//evrey new point value. refreshe the form to check if all the points are in valid state
 		var validator = $( "#settings" ).validate();
 		validator.resetForm();
 	});
 	
-	$(".playingKeySettings").blur(function(e){
+	$(".playingKeySettings").blur(function(e){//after the user choose the key- handle the key value that been choose
 		InsertChosenKey(e.target,e.target.id);
 		document.removeEventListener('keydown',chooseKey);
 	});
-	$(".playingKeySettings").focus(function(e){
+	$(".playingKeySettings").focus(function(e){//when user chosen the key this lisner will insert its value
 		document.addEventListener('keydown' ,chooseKey);
 	});
-	$("#randomSettings").click(function(e){
+	$("#randomSettings").click(function(e){//insert random values to the settings form
 		var form = document.getElementById("settings");
 		form.up.value="ArrowUp";
 		form.down.value="ArrowDown";
@@ -591,7 +591,6 @@ function initSettings(){
 		form.ballsAmountOutput.value=randomBallsAmount;
 		var randomGameTime=Math.floor(Math.floor(Math.random() * 10))+1;
 		form.gameTime.value=randomGameTime;
-		// form.gameTimeOutput.value= randomGameTime;
 		form.monstersAmount.value=Math.floor(Math.floor(Math.random() * 4))+1;
 		form.colorA.value="#"+Math.floor(Math.random()*16777215).toString(16);
 		form.pointsA.value=Math.floor(Math.floor(Math.random() * 10))+1;
@@ -599,12 +598,13 @@ function initSettings(){
 		form.pointsB.value=Math.floor(Math.floor(Math.random() * 15))+11;
 		form.colorC.value="#"+Math.floor(Math.random()*16777215).toString(16);
 		form.pointsC.value=Math.floor(Math.floor(Math.random() * 20))+26;
+		//after the random value inserted all the fields are valid so we need to refreshe the form
 		var validator = $( "#settings" ).validate();
 		validator.resetForm();
 	});
 }
 
-function setSettings(){
+function setSettings(){//insert all the chosen settings to gameSettings 
 	var form = document.getElementById("settings");
 	CopyPlayingKeysDicts(chosenPlayingKeys, gameSettings.playingKeys);
 	gameSettings.ballsAmount = form.ballsAmount.value;
@@ -624,9 +624,9 @@ function setSettings(){
 	document.getElementById("ballCPoints").textContent=form.pointsC.value;
 	ShowScreen("2");
 }
-function chooseKey(e){
-	chosenKey=e.keyCode;
-	// e.target.value=e.keyCode;
+
+function chooseKey(e){//update the key button with the update values pressed by the user
+	chosenKey=e.keyCode;// save the key code
 	if(chosenKey>=65 && chosenKey<=90)
 		e.target.value=String.fromCharCode(chosenKey);
 	else if(chosenKey==32)
@@ -634,8 +634,8 @@ function chooseKey(e){
 	else
 		e.target.value=e.key;
 }
-function validateChoosenKeys(value, keyType){
-	
+
+function validateChoosenKeys(value, keyType){//checks that chosen key not used already
 	for(var key in chosenPlayingKeys){
 		if(keyType!=key && value==chosenPlayingKeys[key].keyName){
 			return false;
@@ -643,7 +643,8 @@ function validateChoosenKeys(value, keyType){
 	}
 	return true;
 }
-function absulotValdateKeys(){
+
+function absulotValdateKeys(){//checks all chosen keys are unique
 	for(var key1 in chosenPlayingKeys){
 		for(var key2 in chosenPlayingKeys){
 			if(key1!=key2 && chosenPlayingKeys[key1].keyCode==chosenPlayingKeys[key2].keyCode){
@@ -653,7 +654,8 @@ function absulotValdateKeys(){
 	}
 	return true;
 }
-function InsertChosenKey(targetButton, keyType){
+
+function InsertChosenKey(targetButton, keyType){//insert chosen key (by the user) to chosenPlayingKeys
 	if(keyType=="left"){
 		chosenPlayingKeys["left"].keyCode=chosenKey;
 		chosenPlayingKeys["left"].keyName=targetButton.value;
@@ -670,17 +672,13 @@ function InsertChosenKey(targetButton, keyType){
 		chosenPlayingKeys["down"].keyCode=chosenKey;
 		chosenPlayingKeys["down"].keyName=targetButton.value;
 	}
-	if(absulotValdateKeys()){
+	if(absulotValdateKeys()){//checks if all chosen keys are valid refreshe setting form
 		var validator = $( "#settings" ).validate();
 		validator.resetForm();
 	}
 }
-// function validtionGameAllPoints(){
-// 	var form = document.getElementById("settings");
-// 	return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballB.value)<parseInt(form.ballC.value);
-// }
 
-function CopyPlayingKeysDicts(copyFrom, copyTo){
+function CopyPlayingKeysDicts(copyFrom, copyTo){//copy settings object
 	copyTo["left"].keyCode=copyFrom["left"].keyCode;
 	copyTo["left"].keyName=copyFrom["left"].keyName;
 	copyTo["right"].keyCode=copyFrom["right"].keyCode;
@@ -690,7 +688,8 @@ function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["down"].keyCode=copyFrom["down"].keyCode;
 	copyTo["down"].keyName=copyFrom["down"].keyName;
 }
-function resetSettingForm(){
+
+function resetSettingForm(){//reset the settings form to the last chosen setting values
 	var form = document.getElementById("settings");
 	form.up.value=gameSettings.playingKeys["up"].keyName;
 	form.down.value=gameSettings.playingKeys["down"].keyName;
@@ -706,32 +705,26 @@ function resetSettingForm(){
 	form.colorC.value=gameSettings.ballsSetting["C"].color;
 	form.pointsC.value=gameSettings.ballsSetting["C"].points;
 }
-function ResetSetPlayingKeysForm(){
-	// var tmp = document.getElementById("#upKey").value;
-	// alert(""+tmp);
+
+function ResetSetPlayingKeysForm(){//insert default keys values to the form 
 	$("#upKey")[0].value=playingKeys["up"].keyName;
 	$("#downKey")[0].value=playingKeys["down"].keyName;
 	$("#leftKey")[0].value=playingKeys["left"].keyName;
 	$("#rightKey")[0].value=playingKeys["right"].keyName;
-
-	// document.getElementById("#upKey").value=playingKeys["up"].keyName;
-	// document.getElementById("#downKey").value=playingKeys["down"].keyName;
-	// document.getElementById("#leftKey").value=playingKeys["left"].keyName;
-	// document.getElementById("#rightKey").value=playingKeys["right"].keyName;
 }
-function PlayingKeysSetup(keysArray){
+
+function PlayingKeysSetup(keysArray){//insert default keys values to keys array
 	keysArray["left"]={"keyCode":37, "keyName":"ArrowLeft"};
 	keysArray["right"]={"keyCode":39, "keyName":"ArrowRight"};
 	keysArray["up"]={"keyCode":38, "keyName":"ArrowUp"};
 	keysArray["down"]={"keyCode":40, "keyName":"ArrowDown"};
-	// e.target.value=e.key;
 }
-function ShowScreen(pageId){
-	// 
+
+function ShowScreen(pageId){// this function gets page number show it and hide the current showed page
 	if (activePageId=="#page5" && pageId!=5){
 		resetSettingForm();
 	}
-	if (activePageId=="#page2" && pageId!=2){
+	if (activePageId=="#page2" && pageId!=2){// if we move to page 2 we need to reset the game vars
 		stopMusic();
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
@@ -755,7 +748,7 @@ function ShowScreen(pageId){
 		Start();
 }
 
-function ValidateLogin(form){
+function ValidateLogin(form){//checks inserted details are in the system
 	var username = form["username"].value;
 	var password = form["password"].value;
 	var loginSuccess = false;
@@ -930,6 +923,7 @@ function GetKeyPressed() {
 		return 4;
 	}
 }
+
 function strip(number) {
     return (parseFloat(number).toPrecision(3));
 }
