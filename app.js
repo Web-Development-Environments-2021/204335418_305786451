@@ -63,6 +63,7 @@ users["eilam"]={"firstName":"eilam", "lasName":"gal"};
 
 var ammoAmount = 3;
 var ammo;
+var guns;
 var shootSound;
 var explosionSound;
 var food;
@@ -99,6 +100,7 @@ function initImages(){
 	ghostImages[2].src= "images/green.png";
 	ghostImages[3] = new Image();
 	ghostImages[3].src= "images/yellow.png";
+	
 	movingFood.image = new Image();
 	movingFood.image.src = "images/burger.png";
 	clock.image = new Image();
@@ -180,7 +182,6 @@ function restart(){
 	lives=5;
 	score=0;
 	movingFood.show=true;
-
 	Start();
 }
 function repositionPacman() {
@@ -617,7 +618,9 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
 	gameSettings.ballsSetting["C"].points=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.value;
-	// alert("New game settings!!!")
+	document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
+	document.getElementById("ballCellC").style.backgroundColor=form.colorB.value;
+	document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
 	ShowScreen("2");
 }
 function chooseKey(e){
@@ -763,7 +766,7 @@ function ValidateLogin(form){
 
 function Start() {
 	initShootListener();
-	document.getElementById("lblTime").style.color="black";
+	// document.getElementById("lblTime").style.color="black";
 	ghosts=[];
 	context = canvas.getContext("2d");
 	board = new Array();
@@ -995,6 +998,9 @@ function GetEyePosition(x,y){
 }
 
 function UpdatePosition() {
+	updateCollisions();
+	randomMove(movingFood);
+	randomMove(clock);
 	board[pacman.i][pacman.j] = 0;
 	var x = GetKeyPressed();
 	if (x == 1) { //Go up
@@ -1066,6 +1072,7 @@ function UpdatePosition() {
 		window.clearInterval(interval);
 		window.clearInterval(ghostsinterval);
 		interval=undefined;
+		document.getElementById("lblTime").style.color="black";
 		if (score<100){
 			window.alert("You are better than "+score+" points!");
 			restart();
@@ -1075,9 +1082,7 @@ function UpdatePosition() {
 			restart();
 		}
 	}
-	updateCollisions();
-	randomMove(movingFood);
-	randomMove(clock);
+	
 	if (time_remaining<10){
 		document.getElementById("lblTime").style.color="red";
 	}
