@@ -45,6 +45,7 @@ fieldset
 {
     width: 100%;
     text-align: center;
+    border: thick;
 }
 #navbar
 {
@@ -173,4 +174,10 @@ tr{
   .settingsButton{
       width: 80px;
   }
+  #settingsTable{
+      width: 100px;
+  }
 
+#ballASet{
+    width: 50px;
+}

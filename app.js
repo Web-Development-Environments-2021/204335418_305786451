@@ -13,7 +13,7 @@ var ghostsinterval;
 var loggedIn = true;
 var activePageId='#page1';
 var users=[];
-var intervalLength=150;
+var intervalLength=100;
 var activeUser="";
 // var playingKeys = [];
 // playingKeysSetup(playingKeys);
@@ -619,9 +619,9 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
 	gameSettings.ballsSetting["C"].points=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.value;
-	// document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
-	// document.getElementById("ballCellC").style.backgroundColor=form.colorB.value;
-	// document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
+	document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
+	document.getElementById("ballCellB").style.backgroundColor=form.colorB.value;
+	document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
 	ShowScreen("2");
 }
 function chooseKey(e){

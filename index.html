@@ -14,7 +14,7 @@
 		<title>Pacman</title>
 		<link rel="icon" href="images/icon.png">
 	</head>
-
+	
 	<body>
 		<div id="navbar">
 			<button class="pageButton" page=1>Welcome</button>
@@ -31,48 +31,79 @@
 				<button class="pageButton" page=3>Sign Up</button>
 				<button class="pageButton" page=4>Login</button>
 			</div>
+		
 			<div class="game" id="page2" hidden>
-				<div class="statsContainer">
-					<div class="stats">
-						<div class="stat" id="score">
-						<label for="lblScore">Score:</label>
-						<input id="lblScore" type="text" disabled/>
-						</div>
-						<div class="stat"  id="lives">
-							<label for="lblLives">Lives:</label>
-							<input id="lblLives" type="text" disabled/>
-						</div>
-					</div>
-				</div>
-				<br>
-				<!-- <div class="canvasContainer"> -->
-					<canvas id="canvas" height="600" width="600"></canvas>
-				<!-- </div> -->
-				<br>
-				<div class="statsContainer">
-					<div class="stats">
-						<div class="stat" id="time">
-							<label for="lblTime">Time:</label><br>
-							<input id="lblTime" type="text" disabled/>
-						</div>
-						<div class="stat" id="ammo">
-							<label for="lblAmmo">Ammo:</label>
-							<input id="lblAmmo" type="text" disabled hidden>
-							<br>
-							<table id="guns">
-								<tr id="gunImages">
-									<td><img class="gun" src="images/gun.png" height="45px"></td>
-									<td><img class="gun" src="images/gun.png" height="45px"></td>
-									<td><img class="gun" src="images/gun.png" height="45px"></td>
-									<td><img class="gun" src="images/gun.png" height="45px"></td>
-									<td><img class="gun" src="images/gun.png" height="45px"></td>
+				<table>
+					<td id="settingsTable">
+						<table border="1" id="settingsTable">
+							<tr>
+								<td id="ballCellA"></td>
+								<td id="ballAPoints"></td>
+							</tr>
+							<tr>
+								<td id="ballCellB"></td>
+								<td id="ballBPoints"></td>
 
-								</tr>
-							</table>
-						</input>
+							</tr>
+							<tr>
+								<td id="ballCellC"></td>
+								<td id="ballCPoints"></td>
+							</tr>
+							<tr>
+								<td id="foodCell"></td>
+								<td id="foodImage"></td>
+							</tr>
+							<tr>
+								<td id="clockCell"></td>
+								<td id="clockImage"></td>
+							</tr>
+						</table>
+					</td>
+					<td>
+						<div class="statsContainer">
+							<div class="stats">
+								<div class="stat" id="score">
+								<label for="lblScore">Score:</label>
+								<input id="lblScore" type="text" />
+								</div>
+								<div class="stat"  id="lives">
+									<label for="lblLives">Lives:</label>
+									<input id="lblLives" type="text" />
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
+						<canvas id="canvas" height="600" width="600"></canvas>
+						<br>
+						<div class="statsContainer">
+							<div class="stats">
+								<div class="stat" id="time">
+									<label for="lblTime">Time:</label>
+									<input id="lblTime" type="text" />
+								</div>
+								<div class="stat" id="ammo">
+									<label for="lblAmmo">Ammo:</label>
+									<input id="lblAmmo" type="text" disabled hidden>
+									<br>
+									<table id="guns">
+										<tr id="gunImages">
+											<td><img class="gun" src="images/gun.png" height="45px"></td>
+											<td><img class="gun" src="images/gun.png" height="45px"></td>
+											<td><img class="gun" src="images/gun.png" height="45px"></td>
+											<td><img class="gun" src="images/gun.png" height="45px"></td>
+											<td><img class="gun" src="images/gun.png" height="45px"></td>
+
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+						<br>
+					</td>
+					<td>
+
+					</td>
+				</table>
+					
 			</div>
 				
 			<div id="page3" hidden>
