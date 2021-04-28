@@ -12,6 +12,13 @@ body
     min-height: 100%;
 }
 
+fieldset
+{
+    width: fit-content;
+    margin: auto;
+    border : solid thick;
+}
+
 .statsContainer
 {
     width: 100%;
