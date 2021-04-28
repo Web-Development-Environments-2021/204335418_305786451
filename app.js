@@ -290,6 +290,7 @@ function Shoot(mouse){
 	if (ammo==0)
 		return;
 	ammo--;
+	showGuns(ammo);
 	for (var i=0 ; i<ghosts.length; i++){
 		var startX=ghosts[i].i*60;
 		var endX=ghosts[i].i*60+60;
@@ -618,9 +619,9 @@ function setSettings(){
 	gameSettings.ballsSetting["C"].color=form.colorC.value;
 	gameSettings.ballsSetting["C"].points=form.pointsC.value;
 	gameSettings.monstersAmount=form.monstersAmount.value;
-	document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
-	document.getElementById("ballCellC").style.backgroundColor=form.colorB.value;
-	document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
+	// document.getElementById("ballCellA").style.backgroundColor=form.colorA.value;
+	// document.getElementById("ballCellC").style.backgroundColor=form.colorB.value;
+	// document.getElementById("ballCellC").style.backgroundColor=form.colorC.value;
 	ShowScreen("2");
 }
 function chooseKey(e){
@@ -764,8 +765,20 @@ function ValidateLogin(form){
 	return loginSuccess;
 }
 
+function showGuns(amount){
+	// document.getElementsByClassName("gun");
+	Array.from(document.getElementsByClassName("gun")).forEach(
+		function(gun,i) {
+			if (i<amount)
+				gun.style.opacity=1;
+			else
+				gun.style.opacity=0;
+		}
+	);
+}
 function Start() {
 	initShootListener();
+	showGuns(ammoAmount);
 	// document.getElementById("lblTime").style.color="black";
 	ghosts=[];
 	context = canvas.getContext("2d");
