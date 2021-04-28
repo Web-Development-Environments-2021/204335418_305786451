@@ -482,26 +482,22 @@ function initSettings(){
 				ballA:{
 					required: true,
 					checkBallPoints: true,
-					validtionGamePoints: true,
-					// pattern: "^[0-9]*$",
+					validtionGamePointsA: true,
 				},
 				ballB:{
 					required: true,
 					checkBallPoints: true,
-					validtionGamePoints: true,
-					// pattern: "^[0-9]*$",
+					validtionGamePointsB: true,
 				},
 				ballC:{
 					required: true,
 					checkBallPoints: true,
-					validtionGamePoints: true,
-
-					// pattern: "^[0-9]*$",
+					validtionGamePointsC: true,
 				},
 				gameTime:{
 					required: true,
 					checkGameTime: true,
-					// pattern: "^[0-9]*$",
+			
 				},
 			},
 			messages : {
@@ -522,22 +518,16 @@ function initSettings(){
 				},
 				ballA:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePoints: "A points should be less than the B points",
-					// pattern:"Digits only",
+					validtionGamePointsA: "A points should be less than the B points",
 				},
 				ballB:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePoints: "B points should be less than the C points and greater than the A points.",
-					// pattern:"Digits only",
+					validtionGamePointsB: "B points should be less than the C points and greater than the A points.",
 				},
 				ballC:{
 					checkBallsPoints:"Please enter a value greater or equal to 1.",
-					validtionGamePoints: "C greater than the B points",
-					// pattern:"Digits only",
+					validtionGamePointsC: "C greater than the B points",
 				},
-				// ballColor:{
-				// 	checkPassword:"Please enter at least one character and one digit"
-				// },
 				gameTime:{
 					checkGameTime:"The minimum time for a game is 1 minute",
 					pattern:"Digits only",
@@ -566,9 +556,17 @@ function initSettings(){
 	$.validator.addMethod("checkBallPoints", function (value) {
 		return value>=1; 
 	});
-	$.validator.addMethod("validtionGamePoints", function(){
+	$.validator.addMethod("validtionGamePointsA", function(){
+		var form = document.getElementById("settings");
+		return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballA.value)<parseInt(form.ballC.value);
+	});
+	$.validator.addMethod("validtionGamePointsB", function(){
 		var form = document.getElementById("settings");
 		return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballB.value)<parseInt(form.ballC.value);
+	});
+	$.validator.addMethod("validtionGamePointsC", function(){
+		var form = document.getElementById("settings");
+		return parseInt(form.ballB.value)<parseInt(form.ballC.value) && parseInt(form.ballA.value)<parseInt(form.ballC.value);
 	});
 	$(".ballPoints").change(function(e){
 		var validator = $( "#settings" ).validate();
@@ -675,6 +673,11 @@ function InsertChosenKey(targetButton, keyType){
 		validator.resetForm();
 	}
 }
+// function validtionGameAllPoints(){
+// 	var form = document.getElementById("settings");
+// 	return parseInt(form.ballA.value)<parseInt(form.ballB.value) && parseInt(form.ballB.value)<parseInt(form.ballC.value);
+// }
+
 function CopyPlayingKeysDicts(copyFrom, copyTo){
 	copyTo["left"].keyCode=copyFrom["left"].keyCode;
 	copyTo["left"].keyName=copyFrom["left"].keyName;
